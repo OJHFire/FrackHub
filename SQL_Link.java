@@ -18,7 +18,6 @@ class SQL_Link {
      // Note: url syntax is standard, so do grasp
      String url = "jdbc:oracle:thin:OPS$username/password@ora-srv.wlv.ac.uk:1521/catdb.wlv.ac.uk";
 
-
      // Inserting data using SQL query
      String sql = "SELECT first_name FROM Customer WHERE last_name = 'Warhurst'";
 
