@@ -9,7 +9,7 @@ public class GUI implements ActionListener{
 	
 	private JFrame frame;
 	private JPanel mainMenu, signIn, newUser, userInfo;
-	private JButton btnNewUser, btnSignIn, btnConNewUser, btnConSignIn;
+	private JButton btnNewUser, btnSignIn, btnConNewUser, btnConSignIn, btnReturnMM;
 	private JLabel lblName, lblAddress, lblPhoneNum, lblEmail, lblPassword, lblCustNum;
 	private JTextField txtName, txtAddress, txtPhoneNum, txtEmail, txtPassword, txtCustNum;
 
@@ -38,7 +38,14 @@ public class GUI implements ActionListener{
 		{
 			signIn();
 		}
-
+		else if(e.getSource() == btnConSignIn)
+		{
+			conSignIn();
+		}
+		else if(e.getSource() == btnReturnMM)
+		{
+			mainMenu();
+		}
 	}
 	public void mainMenu() {
 		mainMenu = new JPanel();
@@ -72,6 +79,9 @@ public class GUI implements ActionListener{
 		txtEmail = new JTextField();
 		txtPhoneNum = new JTextField();
 		txtPassword = new JTextField();
+		
+		btnReturnMM = new JButton("Main Menu");
+		btnReturnMM.addActionListener(this);
 
 		newUser.add(lblName);
 		newUser.add(txtName);
@@ -85,6 +95,7 @@ public class GUI implements ActionListener{
 		newUser.add(txtPassword);
 		
 		newUser.add(btnConNewUser);
+		newUser.add(btnReturnMM);
 		
 		frame.getContentPane().removeAll();
 		frame.getContentPane().add(newUser, BorderLayout.NORTH);
@@ -102,6 +113,9 @@ public class GUI implements ActionListener{
 		lblPhoneNum = new JLabel("Phone Number");
 		lblPassword = new JLabel("Password");
 		lblCustNum = new JLabel("Customer Number");
+		
+		btnReturnMM = new JButton("Main Menu");
+		btnReturnMM.addActionListener(this);
 		
 		JLabel lblName2 = new JLabel(cust.getName().getFirstAndLastName());
 		JLabel lblAddress2 = new JLabel(cust.getAddress());
@@ -123,6 +137,7 @@ public class GUI implements ActionListener{
 		userInfo.add(lblCustNum2);
 		userInfo.add(lblPassword);
 		userInfo.add(lblPassword2);
+		userInfo.add(btnReturnMM);
 		
 		frame.getContentPane().removeAll();
 		frame.getContentPane().add(userInfo, BorderLayout.NORTH);
@@ -141,11 +156,15 @@ public class GUI implements ActionListener{
 		txtCustNum = new JTextField();
 		txtPassword = new JTextField();
 
+		btnReturnMM = new JButton("Main Menu");
+		btnReturnMM.addActionListener(this);
+		
 		signIn.add(lblCustNum);
 		signIn.add(txtCustNum);
 		signIn.add(lblPassword);
 		signIn.add(txtPassword);
 		signIn.add(btnConSignIn);
+		signIn.add(btnReturnMM);
 		
 		frame.getContentPane().removeAll();
 		frame.getContentPane().add(signIn, BorderLayout.NORTH);
@@ -159,7 +178,17 @@ public class GUI implements ActionListener{
 		Customer user = new Customer(userName, "000001", txtPassword.getText(), 
 				txtAddress.getText(), txtEmail.getText(), txtPhoneNum.getText());
 		user.printCust();
+		user.saveCust();
+		user = user.custSignIn(txtCustNum.getText(), txtPassword.getText());
 		userInfo(user);
+	}
+	
+	public void conSignIn() {
+		
+		Customer cust = new Customer();
+		cust = cust.custSignIn(txtCustNum.getText(), txtPassword.getText());
+		userInfo(cust);
+
 	}
 
 }
