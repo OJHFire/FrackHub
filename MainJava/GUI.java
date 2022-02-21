@@ -179,7 +179,6 @@ public class GUI implements ActionListener{
 				txtAddress.getText(), txtEmail.getText(), txtPhoneNum.getText());
 		user.printCust();
 		user.saveCust();
-		user = user.custSignIn(txtCustNum.getText(), txtPassword.getText());
 		userInfo(user);
 	}
 	

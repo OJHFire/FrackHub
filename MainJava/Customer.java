@@ -4,7 +4,7 @@ import java.sql.*;
 
 public class Customer {
 	
-	String url = "jdbc:oracle:thin:OPS$USERNAME/PASSWORD@ora-srv.wlv.ac.uk:1521/catdb.wlv.ac.uk";
+	String url = "jdbc:oracle:thin:OPS$username/password@ora-srv.wlv.ac.uk:1521/catdb.wlv.ac.uk";
 	
 	private Name name;
 	private String cust_num;
@@ -112,42 +112,6 @@ public class Customer {
 		   }
 		
 		return new_cust;
-	}
-	
-	public String nextCustNum() {		
-		
-		String sql = ("SELECT projseq3.nextval from Member");
-		String sql2 = ("SELECT projseq3.currval from Member");
-		
-		String cust_num5 = "";
-		
-		Connection con = null;
-		
-		try {
-		       DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
-
-		       con = DriverManager.getConnection(url);
-		       
-		       Statement stmt = con.createStatement();
-		       
-		       ResultSet rs = stmt.executeQuery(sql);
-		       //ResultSet rs2 = stmt.executeQuery(sql2);
-
-		       while (rs.next()) {
-		    	   cust_num5 = rs.getString("currval");   
-		       }
-		       
-		       con.close();
-		       
-		   }
-
-		catch (Exception ex) {
-	
-			System.err.println(ex);
-			return "1000000";
-		}
-		
-		return cust_num5;
 	}
 	
 	public Name getName() {
