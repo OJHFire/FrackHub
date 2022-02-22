@@ -1,13 +1,12 @@
-package FracHub;
+package code;
 
 import java.sql.*;
 
 public class Customer {
 	
-	String url = "jdbc:oracle:thin:OPS$username/password@ora-srv.wlv.ac.uk:1521/catdb.wlv.ac.uk";
+	String url = "jdbc:oracle:thin:OPS$2042387/P46919@ora-srv.wlv.ac.uk:1521/catdb.wlv.ac.uk";
 	
 	private Name name;
-	private String cust_num;
 	private String password;
 	private String address;
 	private String email;
@@ -16,7 +15,6 @@ public class Customer {
 	public Customer() {
 		
 		name = new Name();
-		cust_num = "";
 		password = "";
 		address = "";
 		email = "";
@@ -28,7 +26,6 @@ public class Customer {
 			String address, String email, String phone_num) {
 		
 		this.name = name;
-		this.cust_num = cust_num;
 		this.password = password;
 		this.address = address;
 		this.email = email;
@@ -41,13 +38,12 @@ public class Customer {
 		System.out.println("Address: " + address);
 		System.out.println("Email: " + email);
 		System.out.println("Phone Number: " + phone_num);
-		System.out.println("Customer Number: " + cust_num);
 		System.out.println("Password: " + password);
 	}
 	
 	public void saveCust() {
 		
-		String sql = ("INSERT into Member VALUES (PROJSEQ3.NEXTVAL,'" + name.getFirstName() + 
+		String sql = ("INSERT into FrackHub_Test VALUES (seq_person.nextval,'" + name.getFirstName() + 
 				"','" + name.getSurname() + "','" + address + "','" + phone_num + "','" + email + "','" + password + "')");
 		
 		System.out.println(sql);
@@ -56,7 +52,7 @@ public class Customer {
 		
 		try {
 		       DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
-
+		       System.out.println("Connecting to Database...");
 		       con = DriverManager.getConnection(url);
 		       
 		       Statement stmt = con.createStatement();
@@ -75,7 +71,7 @@ public class Customer {
 
 	public Customer custSignIn(String custNum, String password) {
 		
-		String sql = ("SELECT * FROM Member WHERE cust_no = '" + custNum + "' AND password = '" + password + "'");
+		String sql = ("SELECT * FROM FrackHub_Test WHERE ID = '" + custNum + "' AND PASSWORD = '" + password + "'");
 		
 		System.out.println(sql);
 		
@@ -85,7 +81,7 @@ public class Customer {
 		
 		try {
 		       DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
-
+		       System.out.println("Connecting to Database...");
 		       con = DriverManager.getConnection(url);
 		       
 		       Statement stmt = con.createStatement();
@@ -93,11 +89,11 @@ public class Customer {
 		       ResultSet rs = stmt.executeQuery(sql);
 
 		       while (rs.next()) {
-		       String new_name = rs.getString("first_name");
-		       String last_name = rs.getString("last_name");
+		       String new_name = rs.getString("name");
+		       String last_name = rs.getString("surname");
 		       String new_address = rs.getString("address");
 		       String new_email = rs.getString("email");
-		       String new_phone_num = rs.getString("contact_no");
+		       String new_phone_num = rs.getString("contact_number");
 		       
 		       
 		       new_cust = new Customer(new Name(new_name + " " + last_name), custNum, password, new_address, new_email, new_phone_num);
@@ -120,14 +116,6 @@ public class Customer {
 
 	public void setName(Name name) {
 		this.name = name;
-	}
-
-	public String getCust_num() {
-		return cust_num;
-	}
-
-	public void setCust_num(String cust_num) {
-		this.cust_num = cust_num;
 	}
 
 	public String getPassword() {
