@@ -1,4 +1,4 @@
-package FracHub;
+package code;
 
 public class Main {
 

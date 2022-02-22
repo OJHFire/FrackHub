@@ -1,4 +1,4 @@
-package FracHub;
+package code;
 
 /**
  * Contains the names of members and can be used to return the name in different formats.
