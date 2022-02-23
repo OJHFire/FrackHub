@@ -10,8 +10,8 @@ public class GUI implements ActionListener{
 	private JFrame frame;
 	private JPanel mainMenu, signIn, signIn2, newUser, newUser2, userInfo, userInfo2;
 	private JButton btnNewUser, btnSignIn, btnConNewUser, btnConSignIn, btnReturnMM;
-	private JLabel lblName, lblAddress, lblPhoneNum, lblEmail, lblPassword, lblCustNum;
-	private JTextField txtName, txtAddress, txtPhoneNum, txtEmail, txtPassword, txtCustNum;
+	private JLabel lblName, lblAddress, lblPhoneNum, lblEmail, lblPassword;
+	private JTextField txtName, txtAddress, txtPhoneNum, txtEmail, txtPassword;
 	
 
 	public GUI() {
@@ -167,12 +167,12 @@ public class GUI implements ActionListener{
 		btnReturnMM.addActionListener(this);
 		
 		lblPassword = new JLabel("Password");
-		lblCustNum = new JLabel("Customer Number");
-		txtCustNum = new JTextField();
+		lblEmail = new JLabel("Email");
+		txtEmail = new JTextField();
 		txtPassword = new JTextField();
 		
-		signIn.add(lblCustNum);
-		signIn.add(txtCustNum);
+		signIn.add(lblEmail);
+		signIn.add(txtEmail);
 		signIn.add(lblPassword);
 		signIn.add(txtPassword);
 		signIn2.add(btnConSignIn);
@@ -188,7 +188,7 @@ public class GUI implements ActionListener{
 	public void conNewUser() {
 		
 		Name userName = new Name(txtName.getText());
-		Customer user = new Customer(userName, "000001", txtPassword.getText(), 
+		Customer user = new Customer(userName, txtPassword.getText(), 
 				txtAddress.getText(), txtEmail.getText(), txtPhoneNum.getText());
 		user.printCust();
 		user.saveCust();
@@ -198,7 +198,7 @@ public class GUI implements ActionListener{
 	public void conSignIn() {
 		
 		Customer cust = new Customer();
-		cust = cust.custSignIn(txtCustNum.getText(), txtPassword.getText());
+		cust = cust.custSignIn(txtEmail.getText(), txtPassword.getText());
 		userInfo(cust);
 
 	}

@@ -22,7 +22,7 @@ public class Customer {
 		
 	}
 	
-	public Customer(Name name, String cust_num, String password, 
+	public Customer(Name name, String password, 
 			String address, String email, String phone_num) {
 		
 		this.name = name;
@@ -69,9 +69,9 @@ public class Customer {
 		   }
 	}
 
-	public Customer custSignIn(String custNum, String password) {
+	public Customer custSignIn(String custEmail, String password) {
 		
-		String sql = ("SELECT * FROM FrackHub_Test WHERE ID = '" + custNum + "' AND PASSWORD = '" + password + "'");
+		String sql = ("SELECT * FROM FrackHub_Test WHERE EMAIL = '" + custEmail + "' AND PASSWORD = '" + password + "'");
 		
 		System.out.println(sql);
 		
@@ -96,7 +96,7 @@ public class Customer {
 		       String new_phone_num = rs.getString("contact_number");
 		       
 		       
-		       new_cust = new Customer(new Name(new_name + " " + last_name), custNum, password, new_address, new_email, new_phone_num);
+		       new_cust = new Customer(new Name(new_name + " " + last_name), password, new_address, new_email, new_phone_num);
 		       }
 		       con.close();
 		       
