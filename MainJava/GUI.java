@@ -8,10 +8,10 @@ import java.awt.event.*;
 public class GUI implements ActionListener{
 	
 	private JFrame frame;
-	private JPanel mainMenu, signIn, signIn2, newUser, newUser2, userInfo, userInfo2;
+	private JPanel mainMenu, signIn, signIn2, newUser, newUser2, userInfo, userInfo2, warningPanel;
 	private JButton btnNewUser, btnSignIn, btnConNewUser, btnConSignIn, btnReturnMM;
-	private JLabel lblName, lblAddress, lblPhoneNum, lblEmail, lblPassword;
-	private JTextField txtName, txtAddress, txtPhoneNum, txtEmail, txtPassword;
+	private JLabel lblFirstName, lblLastName, lblAddress, lblPhoneNum, lblEmail, lblPassword;
+	private JTextField txtFirstName, txtLastName, txtAddress, txtPhoneNum, txtEmail, txtPassword;
 	
 
 	public GUI() {
@@ -22,8 +22,6 @@ public class GUI implements ActionListener{
 		
 		mainMenu();
 		frame.setVisible(true);
-		
-		lblName = new JLabel("Name");
 
 	}
 	
@@ -51,6 +49,9 @@ public class GUI implements ActionListener{
 		}
 	}
 	public void mainMenu() {
+		
+		createVariables();		
+		
 		mainMenu = new JPanel();
 		mainMenu.setBackground(Color.white);
 		mainMenu.setLayout(new GridLayout(0,2,10,20));		
@@ -79,19 +80,11 @@ public class GUI implements ActionListener{
 		btnReturnMM = new JButton("Main Menu");
 		btnReturnMM.addActionListener(this);
 		
-		lblName = new JLabel("Name");
-		lblAddress = new JLabel("Full Address");
-		lblEmail = new JLabel("Email");
-		lblPhoneNum = new JLabel("Phone Number");
-		lblPassword = new JLabel("Password");
-		txtName = new JTextField();
-		txtAddress = new JTextField();
-		txtEmail = new JTextField();
-		txtPhoneNum = new JTextField();
-		txtPassword = new JTextField();
 
-		newUser.add(lblName);
-		newUser.add(txtName);
+		newUser.add(lblFirstName);
+		newUser.add(txtFirstName);
+		newUser.add(lblLastName);
+		newUser.add(txtLastName);
 		newUser.add(lblAddress);
 		newUser.add(txtAddress);
 		newUser.add(lblEmail);
@@ -118,25 +111,22 @@ public class GUI implements ActionListener{
 		userInfo2.setLayout(new GridLayout(0,2,20,10));
 		userInfo.setBackground(Color.white);
 		userInfo2.setBackground(Color.white);
-		
-		lblName = new JLabel("Name");
-		lblAddress = new JLabel("Full Address");
-		lblEmail = new JLabel("Email");
-		lblPhoneNum = new JLabel("Phone Number");
-		lblPassword = new JLabel("Password");
-		
+				
 		btnReturnMM = new JButton("Main Menu");
 		btnReturnMM.addActionListener(this);
 		
-		JLabel lblName2 = new JLabel(cust.getName().getFirstAndLastName());
+		JLabel lblFirstName2 = new JLabel(cust.getName().getFirstName());
+		JLabel lblLastName2 = new JLabel(cust.getName().getSurname());
 		JLabel lblAddress2 = new JLabel(cust.getAddress());
 		JLabel lblEmail2 = new JLabel(cust.getEmail());
 		JLabel lblPhoneNum2 = new JLabel(cust.getPhone_num());
 		JLabel lblPassword2 = new JLabel(cust.getPassword());
 
 
-		userInfo.add(lblName);
-		userInfo.add(lblName2);
+		userInfo.add(lblFirstName);
+		userInfo.add(lblFirstName2);
+		userInfo.add(lblLastName);
+		userInfo.add(lblLastName2);
 		userInfo.add(lblAddress);
 		userInfo.add(lblAddress2);
 		userInfo.add(lblEmail);
@@ -166,11 +156,6 @@ public class GUI implements ActionListener{
 		btnReturnMM = new JButton("Main Menu");
 		btnReturnMM.addActionListener(this);
 		
-		lblPassword = new JLabel("Password");
-		lblEmail = new JLabel("Email");
-		txtEmail = new JTextField();
-		txtPassword = new JTextField();
-		
 		signIn.add(lblEmail);
 		signIn.add(txtEmail);
 		signIn.add(lblPassword);
@@ -187,20 +172,105 @@ public class GUI implements ActionListener{
 	
 	public void conNewUser() {
 		
-		Name userName = new Name(txtName.getText());
-		Customer user = new Customer(userName, txtPassword.getText(), 
-				txtAddress.getText(), txtEmail.getText(), txtPhoneNum.getText());
-		user.printCust();
-		user.saveCust();
-		userInfo(user);
+		if ((!txtFirstName.getText().isEmpty()) && (!txtLastName.getText().isEmpty()) && (!txtAddress.getText().isEmpty()) &&
+				(!txtEmail.getText().isEmpty()) && (!txtPhoneNum.getText().isEmpty()) && (!txtPassword.getText().isEmpty())) {
+			if (checkNumeric(txtPhoneNum.getText())) {
+				if (isValid(txtEmail.getText())) {
+					Name userName = new Name(txtFirstName.getText() + " " + txtLastName.getText());
+					Customer user = new Customer(userName, txtPassword.getText(), 
+					txtAddress.getText(), txtEmail.getText(), txtPhoneNum.getText());
+					user.printCust();
+					user.saveCust();
+					userInfo(user);
+				}
+				else {
+					newUser();
+					inputWarning("Please enter a valid email address.");
+				}
+			}
+			else {
+				newUser();
+				inputWarning("Please enter a valid phone number.");
+			}
+		}
+		else {
+			newUser();
+			inputWarning("Please complete all of the fields.");
+		}
 	}
 	
 	public void conSignIn() {
+		if (!txtEmail.getText().isEmpty()) {
+			if (!txtPassword.getText().isEmpty()) {
+				Customer cust = new Customer();
+				cust = cust.custSignIn(txtEmail.getText(), txtPassword.getText());
+				if (!cust.getName().getFullName().equals(" ")) {
+					userInfo(cust);
+				}
+				else {
+					signIn();
+					inputWarning("Email or password is not valid.");
+				}
+			}
+			else {
+				signIn();
+				inputWarning("Please enter a password.");
+			}
+		}
+		else {
+			signIn();
+			inputWarning("Please enter an email address.");
+		}
+	}
+	
+	public void inputWarning(String message) {
 		
-		Customer cust = new Customer();
-		cust = cust.custSignIn(txtEmail.getText(), txtPassword.getText());
-		userInfo(cust);
-
+		warningPanel = new JPanel();
+		JLabel lblWarning = new JLabel(message);
+		warningPanel.setBackground(Color.white);
+		warningPanel.add(lblWarning);
+		frame.getContentPane().add(warningPanel, BorderLayout.CENTER);
+		frame.repaint();
+		frame.revalidate();
+	}
+	
+	// Adapted from code on https://www.tutorialspoint.com/validate-email-address-in-java
+	public boolean isValid(String email) {
+	      String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+	      return email.matches(regex);
+	   }
+	
+	public boolean checkNumeric(String s) {
+		try 
+		{
+			Integer.parseInt(s);
+			return true;
+			
+		}
+		catch (NumberFormatException error) 
+		{
+			return false;
+		}
+	}	
+	
+	public void createVariables() {
+		txtEmail = new JTextField();
+		txtPassword = new JTextField();
+		txtFirstName = new JTextField();
+		txtLastName = new JTextField();		
+		txtAddress = new JTextField();
+		txtEmail = new JTextField();
+		txtPhoneNum = new JTextField();
+		txtPassword = new JTextField();
+		
+		lblPassword = new JLabel("Password");
+		lblEmail = new JLabel("Email");
+		lblFirstName = new JLabel("First Name");
+		lblLastName = new JLabel("Last Name");
+		lblAddress = new JLabel("Full Address");
+		lblEmail = new JLabel("Email");
+		lblPhoneNum = new JLabel("Phone Number");
+		lblPassword = new JLabel("Password");
 	}
 
 }
