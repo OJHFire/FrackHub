@@ -43,7 +43,7 @@ public class Customer {
 	
 	public void saveCust() {
 		
-		String sqlEmailCheck = ("SELECT COUNT(email) FROM FrackHub_Test WHERE email = '" + email + "'");
+		String sqlEmailCheck = ("SELECT COUNT(*) FROM FrackHub_Test WHERE email = '" + email + "'");
 		
 		System.out.println(sqlEmailCheck);
 		
