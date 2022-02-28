@@ -1,0 +1,61 @@
+User Registration
+------------------------------------------------
+CREATE TABLE OPS$2042387.Member(
+  Id INT not NULL,
+  Name varchar(25) NOT NULL,
+  Surname varchar(25) NOT NULL,
+  Address varchar(100) NOT NULL,
+  Contact_Number varchar(11) NOT NULL,
+  Email varchar(50) NOT NULL,
+  Password varchar(25) NOT NULL,
+  PRIMARY KEY(Id)
+);
+
+-----------------------------------------------------------------------
+
+
+Item Registration
+------------------------------------------------------------------------
+CREATE TABLE OPS$2042387.items(
+	Id INT not NULL,
+	UserID int NOT NULL,
+	Name varchar(25) NOT NULL,
+	Type varchar(10) NOT NULL,
+	Description varchar(100) NOT NULL,
+	Value varchar(10) NOT NULL,
+	Borrow_Cost varchar(10) NOT NULL,
+	
+);
+
+-----------------------------------------------------------------
+
+
+SEQUENCE:
+------------------------------------------------------------------------
+CREATE SEQUENCE seq_item
+	MINVALUE 1
+	START WITH 1
+	INCREMENT BY 1
+	CACHE 10;
+
+
+
+-----------------------------------------------------
+select Id
+    , max(case when FieldName = 'Name' then FieldValue end) as Name
+    , max(case when FieldName = 'Email' then FieldValue end) as Email
+    , max(case when FieldName = 'Password' then FieldValue end) as Password
+from FrackHub_User 
+WHERE PROFILEID = 254 
+  and FieldName in ('Name','Email','Password')
+group by Id;
+
+
+SELECT DISTINCT
+    t1.Id,
+    t1.FieldValue as [Name],
+    t2.FieldValue as [Email],
+FROM FrackHub_User t1
+INNER JOIN FrackHub_User t2 on t2.Id= t1.Id
+WHERE t1.FieldName = 'Name'
+AND t2.FieldName = 'Email';
