@@ -17,14 +17,15 @@ public class mainMenuGUI implements ActionListener{
 	
 		frame = new_frame;
 		mainMenu = new JPanel();
+		mainMenu.setBorder(BorderFactory.createEmptyBorder(50,120,20,120));
 		mainMenu.setBackground(Color.white);
-		mainMenu.setLayout(new GridLayout(0,2,10,20));		
+		mainMenu.setLayout(new GridLayout(2,0,0,10));		
 		btnNewUser = new JButton("Sign Up");
 		btnSignIn = new JButton("Sign In");
 		btnNewUser.addActionListener(this);
 		btnSignIn.addActionListener(this);
-		mainMenu.add(btnNewUser);
-		mainMenu.add(btnSignIn);
+		mainMenu.add(btnNewUser, new GridLayout(1,0));
+		mainMenu.add(btnSignIn, new GridLayout(2,0));
 		
 		frame.getContentPane().removeAll();
 		frame.getContentPane().add(BorderLayout.NORTH, mainMenu);

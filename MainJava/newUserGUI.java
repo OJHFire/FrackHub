@@ -34,6 +34,8 @@ public class newUserGUI implements ActionListener{
 		frame = new_frame;
 		newUser = new JPanel();
 		newUser2 = new JPanel();
+		newUser.setBorder(BorderFactory.createEmptyBorder(50,20,0,20));
+		newUser2.setBorder(BorderFactory.createEmptyBorder(0,50,20,50));
 		newUser.setLayout(new GridLayout(0,2,0,20));	
 		newUser2.setLayout(new GridLayout(0,2,20,10));	
 		newUser.setBackground(Color.white);
@@ -73,12 +75,14 @@ public class newUserGUI implements ActionListener{
 				if (checkNumeric(txtPhoneNum.getText())) {
 					if (isValid(txtEmail.getText())) {
 						Name userName = new Name(txtFirstName.getText() + " " + txtLastName.getText());
-						Customer user = new Customer(userName, txtPassword.getText(), 
+						Customer cust = new Customer(userName, txtPassword.getText(), 
 						txtAddress.getText(), txtEmail.getText(), txtPhoneNum.getText());
-						user.printCust();
-						user.saveCust();
-						userInfoGUI new_panel = new userInfoGUI();
-						new_panel.userInfo(user, frame);
+						cust.printCust();
+						cust.saveCust();
+						//userInfoGUI new_panel = new userInfoGUI();
+						//new_panel.userInfo(user, frame);
+						optionMenuGUI new_panel = new optionMenuGUI();
+						new_panel.optionMenu(cust, frame);
 					}
 					else {
 						newUser(frame);

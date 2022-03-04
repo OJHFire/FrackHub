@@ -26,6 +26,8 @@ public class signInGUI implements ActionListener{
 		frame = new_frame;
 		signIn = new JPanel();
 		signIn2 = new JPanel();
+		signIn.setBorder(BorderFactory.createEmptyBorder(50,20,0,20));
+		signIn2.setBorder(BorderFactory.createEmptyBorder(0,50,20,50));
 		signIn.setLayout(new GridLayout(0,2,0,20));	
 		signIn2.setLayout(new GridLayout(0,2,20,10));
 		signIn.setBackground(Color.white);
@@ -55,8 +57,10 @@ public class signInGUI implements ActionListener{
 				Customer cust = new Customer();
 				cust = cust.custSignIn(txtEmail.getText(), txtPassword.getText());
 				if (!cust.getName().getFullName().equals(" ")) {
-					userInfoGUI new_panel = new userInfoGUI();
-					new_panel.userInfo(cust, frame);
+					//userInfoGUI new_panel = new userInfoGUI();
+					//new_panel.userInfo(cust, frame);
+					optionMenuGUI new_panel = new optionMenuGUI();
+					new_panel.optionMenu(cust, frame);
 				}
 				else {
 					signIn(frame);
