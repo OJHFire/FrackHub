@@ -42,82 +42,103 @@ public class Customer {
 	}
 	
 	public void saveCust() {
-		
-		String sqlEmailCheck = ("SELECT COUNT(*) FROM FrackHub_Test WHERE email = '" + email + "'");
-		
-		System.out.println(sqlEmailCheck);
-		
-		String sql = ("INSERT into FrackHub_Test VALUES (seq_person.nextval,'" + name.getFirstName() + 
-				"','" + name.getSurname() + "','" + address + "','" + phone_num + "','" + email + "','" + password + "')");
-		
-		System.out.println(sql);
-		
-		Connection con = null;
-		
-		try {
-		       DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
-		       System.out.println("Connecting to Database...");
-		       con = DriverManager.getConnection(url);
-		       
-		       Statement stmtE = con.createStatement();
-		       
-		       Statement stmt = con.createStatement();
-		       
-		       int count = 0;
-		       
-		       stmtE.execute(sqlEmailCheck);
-		       
-		       stmt.executeUpdate(sql);
-		       
-		       con.close();
-		       
-		   }
+		if(emailIsUnique(email)) {
 
-		catch (Exception ex) {
-	
-		       System.err.println(ex);
-		   }
+			String sql = ("INSERT into FrackHub_Test VALUES (seq_person.nextval,'" + name.getFirstName() +
+					"','" + name.getSurname() + "','" + address + "','" + phone_num + "','" + email + "','" + password + "')");
+
+			System.out.println(sql);
+
+			Connection con = null;
+
+			try {
+				DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
+				System.out.println("Connecting to Database...");
+				con = DriverManager.getConnection(url);
+
+				Statement stmt = con.createStatement();
+
+				stmt.executeUpdate(sql);
+
+				con.close();
+
+			} catch (Exception ex) {
+
+				System.err.println(ex);
+			}
+		}else{
+			System.out.println("ERROR: Email is not unique!");
+		}
 	}
 
 	public Customer custSignIn(String custEmail, String password) {
-		
+
+
 		String sql = ("SELECT * FROM FrackHub_Test WHERE EMAIL = '" + custEmail + "' AND PASSWORD = '" + password + "'");
-		
+
 		System.out.println(sql);
-		
+
 		Connection con = null;
-		
+
 		Customer new_cust = new Customer();
-		
+
 		try {
-		       DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
-		       System.out.println("Connecting to Database...");
-		       con = DriverManager.getConnection(url);
-		       
-		       Statement stmt = con.createStatement();
-		       
-		       ResultSet rs = stmt.executeQuery(sql);
+			DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
+			System.out.println("Connecting to Database...");
+			con = DriverManager.getConnection(url);
 
-		       while (rs.next()) {
-		       String new_name = rs.getString("name");
-		       String last_name = rs.getString("surname");
-		       String new_address = rs.getString("address");
-		       String new_email = rs.getString("email");
-		       String new_phone_num = rs.getString("contact_number");
-		       
-		       
-		       new_cust = new Customer(new Name(new_name + " " + last_name), password, new_address, new_email, new_phone_num);
-		       }
-		       con.close();
-		       
-		   }
+			Statement stmt = con.createStatement();
 
-		catch (Exception ex) {
-	
-		       System.err.println(ex);
-		   }
-		
+			ResultSet rs = stmt.executeQuery(sql);
+
+			while (rs.next()) {
+				String new_name = rs.getString("name");
+				String last_name = rs.getString("surname");
+				String new_address = rs.getString("address");
+				String new_email = rs.getString("email");
+				String new_phone_num = rs.getString("contact_number");
+
+
+				new_cust = new Customer(new Name(new_name + " " + last_name), password, new_address, new_email, new_phone_num);
+			}
+			con.close();
+
+		} catch (Exception ex) {
+
+			System.err.println(ex);
+		}
+
 		return new_cust;
+	}
+
+	public Boolean emailIsUnique(String userEmail){
+		//not sure if this query is correct, sorry I'm not great at sql...
+		String sql = ("SELECT email FROM FrackHub_Test");
+		Connection con = null;
+		DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
+		System.out.println("Connecting to Database...");
+		con = DriverManager.getConnection(url);
+
+		Statement stmt = con.createStatement();
+
+		//create a result from the sql query
+		ResultSet rs = stmt.execute(sql);
+
+		//got the while loop thing from the official oracle docs
+		//https://docs.oracle.com/javase/tutorial/jdbc/basics/retrieving.html
+
+		//the while loop will run until the rs.next command can't continue
+		while(rs.next()){
+			//every rs.next the userEmail is compared to the one in the data set
+			if (userEmail == rs.getString("email")){
+				//if a match is found false is returned
+				con.close();
+				return false;
+			}
+		}
+		//once rs.next stops it returns true as that means there is no matches
+		con.close();
+		return true;
 	}
 	
 	public Name getName() {
