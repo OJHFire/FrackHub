@@ -67,13 +67,13 @@ public class optionMenuGUI implements ActionListener{
 		{
 			signInGUI new_panel = new signInGUI();
 			new_panel.signIn(frame);
-		}
+		}*/
 		else if(e.getSource() == btnBookItem)
 		{
-			signInGUI new_panel = new signInGUI();
-			new_panel.signIn(frame);
+			addBookingGUI new_panel = new addBookingGUI();
+			new_panel.addBooking(cust, frame);
 		}
-		else if(e.getSource() == btnViewBookedItems)
+		/*else if(e.getSource() == btnViewBookedItems)
 		{
 			signInGUI new_panel = new signInGUI();
 			new_panel.signIn(frame);
