@@ -84,7 +84,7 @@ public class addBookingGUI implements ActionListener{
 		
 		
 		type_list = new ArrayList<String>();
-		ItemResult itemResult = item.viewAllItems();
+		ItemResult itemResult = item.viewAllItems(cust);
 		
 		type_list = itemResult.type_list;
 		type_list2 = type_list.toArray(new String[0]);

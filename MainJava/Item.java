@@ -79,10 +79,12 @@ public class Item {
 		   }
 	}
 	
-	public ItemResult viewAllItems() {
+	public ItemResult viewAllItems(Customer cust) {
 		
-		String sql1 = ("SELECT distinct type FROM items");
-		String sql2 = ("SELECT * FROM items");
+		String sql1 = ("SELECT distinct type FROM items WHERE userid != " + cust.getCust_num());
+		String sql2 = ("SELECT * FROM items WHERE userid != " + cust.getCust_num());
+		
+		System.out.println(sql1);
 		
 		Connection con = null;
 		
