@@ -16,7 +16,7 @@ public class signInGUI implements ActionListener{
 	JButton btnReturnMM;
 	
 	JTextField txtEmail = new JTextField();
-	JTextField txtPassword = new JTextField();
+	JPasswordField txtPassword = new JPasswordField();
 
 	JLabel lblEmail = new JLabel("Email");
 	JLabel lblPassword = new JLabel("Password");
@@ -53,9 +53,9 @@ public class signInGUI implements ActionListener{
 	
 	public void conSignIn() {
 		if (!txtEmail.getText().isEmpty()) {
-			if (!txtPassword.getText().isEmpty()) {
+			if (txtPassword.getPassword().length != 0) {
 				Customer cust = new Customer();
-				cust = cust.custSignIn(txtEmail.getText(), txtPassword.getText());
+				cust = cust.custSignIn(txtEmail.getText(), new String(txtPassword.getPassword());
 				if (!cust.getName().getFullName().equals(" ")) {
 					//userInfoGUI new_panel = new userInfoGUI();
 					//new_panel.userInfo(cust, frame);
