@@ -55,10 +55,9 @@ public class signInGUI implements ActionListener{
 		if (!txtEmail.getText().isEmpty()) {
 			if (txtPassword.getPassword().length != 0) {
 				Customer cust = new Customer();
-				cust = cust.custSignIn(txtEmail.getText(), new String(txtPassword.getPassword());
+				cust = cust.custSignIn(txtEmail.getText(), txtPassword);
 				if (!cust.getName().getFullName().equals(" ")) {
-					//userInfoGUI new_panel = new userInfoGUI();
-					//new_panel.userInfo(cust, frame);
+
 					optionMenuGUI new_panel = new optionMenuGUI();
 					new_panel.optionMenu(cust, frame);
 				}

@@ -15,13 +15,10 @@ public class optionMenuGUI implements ActionListener{
 	JButton btnAddItem;
 	JButton btnBookItem;
 	JButton btnSignOut;
+	JButton btnViewMyItems;
 	JButton btnViewBookedItems;
-	
-	public JLabel blankLabel() {
-		JLabel blank = new JLabel("");
-		
-		return blank;
-	}
+	JButton btnViewMonthlyReport;
+
 	
 	public void optionMenu(Customer new_cust, JFrame new_frame) {
 	
@@ -32,23 +29,29 @@ public class optionMenuGUI implements ActionListener{
 		optionMenu.setBorder(BorderFactory.createEmptyBorder(50,120,20,120));
 
 		optionMenu.setBackground(Color.white);
-		optionMenu.setLayout(new GridLayout(5,0,0,10));		
+		optionMenu.setLayout(new GridLayout(7,0,0,10));		
 		btnCustInfo = new JButton("Customer Information");
 		btnAddItem = new JButton("Add Item");
 		btnBookItem = new JButton("Book an Item");
+		btnViewMyItems = new JButton("View My Items");
 		btnViewBookedItems = new JButton("View Booked Items");
+		btnViewMonthlyReport = new JButton("View Monthly Report");
 		btnSignOut = new JButton("Sign Out");
 		btnCustInfo.addActionListener(this);
 		btnAddItem.addActionListener(this);
 		btnBookItem.addActionListener(this);
+		btnViewMyItems.addActionListener(this);
 		btnViewBookedItems.addActionListener(this);
+		btnViewMonthlyReport.addActionListener(this);
 		btnSignOut.addActionListener(this);
 		
 		optionMenu.add(btnCustInfo, new GridLayout(1,0));
 		optionMenu.add(btnAddItem, new GridLayout(2,0));
 		optionMenu.add(btnBookItem, new GridLayout(3,0));
-		optionMenu.add(btnViewBookedItems, new GridLayout(4,0));
-		optionMenu.add(btnSignOut, new GridLayout(5,0));
+		optionMenu.add(btnViewMyItems, new GridLayout(4,0));
+		optionMenu.add(btnViewBookedItems, new GridLayout(5,0));
+		optionMenu.add(btnViewMonthlyReport, new GridLayout(6,0));
+		optionMenu.add(btnSignOut, new GridLayout(7,0));
 		
 		frame.getContentPane().removeAll();
 		frame.getContentPane().add(BorderLayout.NORTH, optionMenu);
@@ -63,21 +66,31 @@ public class optionMenuGUI implements ActionListener{
 			userInfoGUI new_panel = new userInfoGUI();
 			new_panel.userInfo(cust, frame);
 		}
-		/*else if(e.getSource() == btnAddItem)
+		else if(e.getSource() == btnAddItem)
 		{
-			signInGUI new_panel = new signInGUI();
-			new_panel.signIn(frame);
-		}*/
+			newItemGUI new_panel = new newItemGUI();
+			new_panel.newItem(cust, frame);
+		}
 		else if(e.getSource() == btnBookItem)
 		{
 			addBookingGUI new_panel = new addBookingGUI();
 			new_panel.addBooking(cust, frame);
 		}
+		/*else if(e.getSource() == btnViewMyItems)
+		{
+			signInGUI new_panel = new signInGUI();
+			new_panel.signIn(frame);
+		}*/
 		/*else if(e.getSource() == btnViewBookedItems)
 		{
 			signInGUI new_panel = new signInGUI();
 			new_panel.signIn(frame);
 		}*/
+		else if(e.getSource() == btnViewMonthlyReport)
+		{
+			monthlyAccountGUI new_panel = new monthlyAccountGUI();
+			new_panel.monthlyAccount(cust, frame);
+		}
 		else if(e.getSource() == btnSignOut)
 		{
 			mainMenuGUI new_panel = new mainMenuGUI();

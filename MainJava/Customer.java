@@ -2,6 +2,8 @@ package code;
 
 import java.sql.*;
 
+import javax.swing.JPasswordField;
+
 public class Customer {
 	
 	String url = "jdbc:oracle:thin:OPS$2042387/P46919@ora-srv.wlv.ac.uk:1521/catdb.wlv.ac.uk";
@@ -38,12 +40,10 @@ public class Customer {
 		
 	}
 	
-	public Customer(int cust_num, Name name, String password, 
-			String address, String email, String phone_num) {
+	public Customer(int cust_num, Name name, String address, String email, String phone_num) {
 		
 		this.cust_num = cust_num;
 		this.name = name;
-		this.password = password;
 		this.address = address;
 		this.email = email;
 		this.phone_num = phone_num;
@@ -86,9 +86,9 @@ public class Customer {
 		   }
 	}
 
-	public Customer custSignIn(String custEmail, String password) {
+	public Customer custSignIn(String custEmail, JPasswordField password) {
 		
-		String sql = ("SELECT * FROM member WHERE EMAIL = '" + custEmail + "' AND PASSWORD = '" + password + "'");
+		String sql = ("SELECT * FROM member WHERE EMAIL = '" + custEmail + "' AND PASSWORD = '" + new String(password.getPassword()) + "'");
 		
 		System.out.println(sql);
 		
@@ -115,7 +115,7 @@ public class Customer {
 			       
 			       
 			       new_cust = new Customer(new_cust_num, new Name(new_name + " " + last_name), 
-			    		   					password, new_address, new_email, new_phone_num);
+			    		   					new_address, new_email, new_phone_num);
 		       }
 		       con.close();
 		       
