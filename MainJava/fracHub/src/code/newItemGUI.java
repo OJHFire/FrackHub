@@ -1,4 +1,6 @@
-// Call this function from the Main Menu sending the userName and the User ID
+package code;
+
+//Call this function from the Main Menu sending the userName and the User ID
 
 import javax.swing.*;
 
@@ -19,6 +21,7 @@ import java.text.Format;
 public class newItemGUI implements ActionListener {
 
 	JFrame frame;
+	Customer cust;
 
 	String userName;
 
@@ -41,7 +44,7 @@ public class newItemGUI implements ActionListener {
 	JTextField txtFieldItemName = new JTextField();
 	JComboBox<String> comboItemType = new JComboBox<String>();
 	JTextArea textAreaDescription = new JTextArea();
-	DefaultStyledDocument doc;
+	DefaultStyledDocument doc = new DefaultStyledDocument();
 	JTextField txtFieldValue = new JTextField();
 	JTextField txtFieldCostPerDay = new JTextField();
 
@@ -69,18 +72,13 @@ public class newItemGUI implements ActionListener {
 	JLabel lblCostPerDay = new JLabel("Cost per Day");
 	int count;
 
-	newItemGUI(String name, int id) {
-		this.userName = name;
-		this.userId = id;
-		newItem(new JFrame());
-
-	}
-
-	public void newItem(JFrame new_Frame) {
+	public void newItem(Customer new_cust, JFrame new_Frame) {
 
 		frame = new_Frame;
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		cust = new_cust;
 
 		// 50, 50 , 450, 500
 		frame.setBounds(50, 50, 450, 500);
@@ -139,7 +137,7 @@ public class newItemGUI implements ActionListener {
 		// Item Type
 		comboItemType.setBackground(Color.WHITE);
 		comboItemType.setModel(
-				new DefaultComboBoxModel<String>(new String[] { "Electronic", "Non-Electronic", "Book", "Digital" }));
+				new DefaultComboBoxModel<String>(new String[] { "Book", "Craft", "Digital", "Electronic", "Garden"  }));
 		gbc_comboItemType = new GridBagConstraints();
 		gbc_comboItemType.insets = new Insets(0, 0, 5, 5);
 		gbc_comboItemType.fill = GridBagConstraints.HORIZONTAL;
@@ -156,7 +154,7 @@ public class newItemGUI implements ActionListener {
 
 		textAreaDescription.setToolTipText("Enter Item Description");
 		textAreaDescription.setLineWrap(true);
-		doc = new DefaultStyledDocument();
+		//doc = new DefaultStyledDocument();
 		doc.setDocumentFilter(new DocumentSizeFilter(100));
 		doc.addDocumentListener(new DocumentListener() {
 			@Override
@@ -210,7 +208,7 @@ public class newItemGUI implements ActionListener {
 		centerPanel.add(lblCostPerDay, gbc_lblCostPerDay);
 
 		// Cost per Day Field
-		txtFieldCostPerDay = new JTextField();
+		//txtFieldCostPerDay = new JTextField();
 		gbc_txtFieldCostPerDay = new GridBagConstraints();
 		gbc_txtFieldCostPerDay.insets = new Insets(0, 0, 5, 5);
 		gbc_txtFieldCostPerDay.fill = GridBagConstraints.HORIZONTAL;
@@ -222,11 +220,11 @@ public class newItemGUI implements ActionListener {
 
 		// Bottom Panel
 		bottomPanel = new JPanel();
-		bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 150, 5));
+		bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 100, 20));
 
-		btnSubmit = new JButton("Submit");
+		btnSubmit = new JButton("Confirm");
 		btnSubmit.addActionListener(this);
-		btnBack = new JButton("Back");
+		btnBack = new JButton("Main Menu");
 		btnBack.addActionListener(this);
 
 		bottomPanel.add(btnSubmit);
@@ -269,28 +267,28 @@ public class newItemGUI implements ActionListener {
 						//Save Cost per Day of the Item
 						costPerDay = Double.parseDouble(txtFieldCostPerDay.getText());
 						//Add to database
-						System.out.println("All Details Submitted");
-						
+						Item new_item = new Item(cust.getCust_num(), itemName, itemType, itemDescription, value, costPerDay);
+						new_item.saveItem();						
 						
 					}else 
 					{
-						newItem(frame);
+						newItem(cust, frame);
 						inputWarning("Invalid item Cost Per Day");
 					}
 				}else 
 				{
-					newItem(frame);
+					newItem(cust, frame);
 					inputWarning("Invalid item Value");
 				}
 
 			}else 
 			{
-				newItem(frame);
-				inputWarning("Desctiption exceeds 100 words");
+				newItem(cust, frame);
+				inputWarning("Description exceeds 100 characters");
 			}
 		}
 		else {
-			newItem(frame);
+			newItem(cust, frame);
 			inputWarning("Compile all the fields");
 		}
 	}
@@ -310,40 +308,6 @@ public class newItemGUI implements ActionListener {
 		frame.revalidate();
 	}
 
-	public void addToDatabase(double value, double costPerDay) {
-
-		try {
-			System.out.println("Item Registration");
-			// Registering drivers
-			DriverManager.registerDriver(new oracle.jdbc.OracleDriver());// Creating Connection Object
-			System.out.println("Connecting to Database...");
-			Connection connection = DriverManager
-					.getConnection("jdbc:oracle:thin:OPS$2042387/P46919@ora-srv.wlv.ac.uk:1521/catdb.wlv.ac.uk");
-			System.out.println("Connected with database");
-			// Prepared Statement
-			PreparedStatement Pstatement = connection.prepareStatement(
-					"insert into Items(Id, UserID, Name, Type, Description, Value, Borrow_Cost) values(seq_item.nextval,?,?,?,?,?,?)");
-			// Specifying the values of it's parameter
-			Pstatement.setInt(1, userId);
-			System.out.println("userId: Done");
-			Pstatement.setString(2, txtFieldItemName.getText());
-			System.out.println("Item Name: Done");
-			Pstatement.setString(3, comboItemType.getSelectedItem().toString());
-			System.out.println("Item Type: Done");
-			Pstatement.setString(4, textAreaDescription.getText());
-			System.out.println("Description : Done");
-			Pstatement.setDouble(5, value);
-			System.out.println("Value: Done");
-			Pstatement.setDouble(6, costPerDay);
-			System.out.println("Cost per Day: Done");
-
-			Pstatement.executeUpdate();
-
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-
-	}
 
 	public boolean checkNumeric(String s) {
 		try {
@@ -358,16 +322,11 @@ public class newItemGUI implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 		if (e.getSource() == btnSubmit) {
-			try {
-				conNewItem();
-				// addToDatabase(value, costPerDay);
-			} catch (Exception error) {
-				System.out.println("INVALID DATA\n Please check the Value and the Cost Per Day");
-			}
+			conNewItem();
 
 		} else if (e.getSource() == btnBack) {
-			// Main Menu
-			System.out.println("BackToMenu");
+			optionMenuGUI new_panel = new optionMenuGUI();
+			new_panel.optionMenu(cust, frame);
 		}
 	}
 }

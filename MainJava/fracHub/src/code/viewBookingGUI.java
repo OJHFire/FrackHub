@@ -4,15 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
-
-import com.github.lgooddatepicker.components.DatePicker;
-import com.github.lgooddatepicker.components.DatePickerSettings;
-import com.github.lgooddatepicker.components.DatePickerSettings.DateArea;
-import com.github.lgooddatepicker.zinternaltools.DateChangeEvent;
-import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
 
 
 public class viewBookingGUI implements ActionListener{

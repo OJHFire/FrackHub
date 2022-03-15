@@ -123,6 +123,90 @@ public class Booking {
 		   }
 		return true;
 	}
+	
+	public double[][] monthlyAccountBooking(int year, Customer cust) {
+		
+		//ArrayList<double[]> monthlyDetails = new ArrayList<double[]>();
+		double[][] monthlyDetails = new double[12][];
+		
+		String[] month_list = {"January", "February", "March", "April", "May", "June",
+				"July", "August", "September", "October", "November", "December"};
+					
+		Connection con = null;
+			
+		try {
+					
+			DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
+			System.out.println("Connecting to Database...");
+			con = DriverManager.getConnection(url);
+			
+			Statement stmt = con.createStatement();
+			
+			int i = 0;
+			       
+			for (String month : month_list) {
+			    	   
+				double ownItemsBookedCount = 0;
+				double bookedItemsCount = 0;
+				double totalDebit = 0;
+				double totalCredit = 0;
+				
+				String sql1 = ("SELECT COUNT(*) as count FROM bookings WHERE (userID = " + cust.getCust_num() +
+								" AND to_char(enddate,'fmMonth') = '" + month + "' AND EXTRACT(YEAR FROM enddate) = " + year + ")");
+				
+				String sql2 = ("SELECT COUNT(*) as count FROM bookings WHERE (borrowerID = " + cust.getCust_num() + 
+								" AND to_char(enddate,'fmMonth') = '" + month + "' AND EXTRACT(YEAR FROM enddate) = " + year + ")");
+				
+				String sql3 = ("SELECT SUM(totalcost) AS total FROM bookings WHERE (borrowerID = " + cust.getCust_num() +
+						" AND to_char(enddate,'fmMonth') = '" + month + "' AND EXTRACT(YEAR FROM enddate) = " + year + ")");
+				
+				String sql4 = ("SELECT SUM(totalcost) AS total FROM bookings WHERE (userID = " + cust.getCust_num() +
+						" AND to_char(enddate,'fmMonth') = '" + month + "' AND EXTRACT(YEAR FROM enddate) = " + year + ")");
+			       
+		       ResultSet rs1 = stmt.executeQuery(sql1);
+
+		       while (rs1.next()) {
+		    	   ownItemsBookedCount = rs1.getInt("count");
+
+		       }
+		       
+		       ResultSet rs2 = stmt.executeQuery(sql2);
+
+		       while (rs2.next()) {
+		    	   bookedItemsCount = rs2.getInt("count");
+
+		       }
+		       
+		       ResultSet rs3 = stmt.executeQuery(sql3);
+
+		       while (rs3.next()) {
+		    	   totalDebit = rs3.getDouble("total");
+
+		       }
+
+		       ResultSet rs4 = stmt.executeQuery(sql4);
+
+		       while (rs4.next()) {
+		    	   totalCredit = rs4.getDouble("total");
+
+		       }
+		       
+		       double[] count = {ownItemsBookedCount, bookedItemsCount, totalDebit, totalCredit};
+		       monthlyDetails[i] = count;
+		       i++;
+		              
+		   }
+			con.close();
+			
+		}
+		
+		catch (Exception ex) {
+		
+			System.err.println(ex);
+		}		
+		
+		return monthlyDetails;
+	}
 
 	public int getBooking_num() {
 		return booking_num;

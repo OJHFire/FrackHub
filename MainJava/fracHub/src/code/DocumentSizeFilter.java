@@ -1,3 +1,5 @@
+package code;
+
 //Code from Oracle
 import javax.swing.*;
 import javax.swing.text.*;

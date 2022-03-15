@@ -7,6 +7,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import javax.swing.JPasswordField;
+
 import org.junit.jupiter.api.Test;
 
 import code.*;
@@ -76,13 +78,12 @@ class SignInTest {
 		Customer test_cust = new Customer();
 
 		// Sign in with email and password.
-		test_cust = test_cust.custSignIn("RebelYell@hotmail.com", "Password123");
+		test_cust = test_cust.custSignIn("RebelYell@hotmail.com", new JPasswordField("Password123"));
 		
 		// Check all the customer details are the same.
 		assertEquals(test_cust.getName().getFullName(), new_cust.getName().getFullName());
 		assertEquals(test_cust.getAddress(), new_cust.getAddress());
 		assertEquals(test_cust.getEmail(), new_cust.getEmail());
-		assertEquals(test_cust.getPassword(), new_cust.getPassword());
 		assertEquals(test_cust.getPhone_num(), new_cust.getPhone_num());
 		
 		// Execute deletion of all rows with email 'RebelYell@hotmail.com'.
@@ -117,7 +118,7 @@ class SignInTest {
 			new_cust.saveCust();
 			
 			Name test_new_name = new Name("John Williams");
-			Customer test_new_cust = new Customer(new_name, "Password96", "45 Tatooine Lane"
+			Customer test_new_cust = new Customer(test_new_name, "Password96", "45 Tatooine Lane"
 											, "RebelYell@hotmail.com", "07766611622");
 
 			// Find number of identical emails in database.
