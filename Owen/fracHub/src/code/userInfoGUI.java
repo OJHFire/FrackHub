@@ -20,7 +20,7 @@ public class userInfoGUI implements ActionListener{
 	JLabel lblAddress = new JLabel("Full Address");
 	JLabel lblEmail = new JLabel("Email");
 	JLabel lblPhoneNum = new JLabel("Phone Number");
-	JLabel lblPassword = new JLabel("Password");
+	//JLabel lblPassword = new JLabel("Password");
 	
 	public void userInfo(Customer new_cust, JFrame new_frame) {
 		
@@ -36,7 +36,7 @@ public class userInfoGUI implements ActionListener{
 		userInfo.setBackground(Color.white);
 		userInfo2.setBackground(Color.white);
 				
-		btnReturnMM = new JButton("Menu");
+		btnReturnMM = new JButton("Main Menu");
 		btnSignOut = new JButton("Sign Out");
 		btnReturnMM.addActionListener(this);
 		btnSignOut.addActionListener(this);
@@ -46,7 +46,7 @@ public class userInfoGUI implements ActionListener{
 		JLabel lblAddress2 = new JLabel(cust.getAddress());
 		JLabel lblEmail2 = new JLabel(cust.getEmail());
 		JLabel lblPhoneNum2 = new JLabel(cust.getPhone_num());
-		JLabel lblPassword2 = new JLabel(cust.getPassword());
+		//JLabel lblPassword2 = new JLabel(cust.getPassword());
 
 		userInfo.add(lblFirstName);
 		userInfo.add(lblFirstName2);
@@ -58,10 +58,11 @@ public class userInfoGUI implements ActionListener{
 		userInfo.add(lblEmail2);
 		userInfo.add(lblPhoneNum);
 		userInfo.add(lblPhoneNum2);
-		userInfo.add(lblPassword);
-		userInfo.add(lblPassword2);
-		userInfo2.add(btnReturnMM);
+		//userInfo.add(lblPassword);
+		//userInfo.add(lblPassword2);
 		userInfo2.add(btnSignOut);
+		userInfo2.add(btnReturnMM);
+		
 		
 		frame.getContentPane().removeAll();
 		frame.getContentPane().add(userInfo, BorderLayout.NORTH);

@@ -2,10 +2,15 @@ package code;
 
 import java.sql.*;
 
+import javax.swing.JPasswordField;
+
 public class Customer {
 	
 	String url = "jdbc:oracle:thin:OPS$2042387/P46919@ora-srv.wlv.ac.uk:1521/catdb.wlv.ac.uk";
 	
+	Item[] item_list;
+	
+	private int cust_num;
 	private Name name;
 	private String password;
 	private String address;
@@ -14,6 +19,7 @@ public class Customer {
 	
 	public Customer() {
 		
+		cust_num = 0;
 		name = new Name();
 		password = "";
 		address = "";
@@ -25,8 +31,19 @@ public class Customer {
 	public Customer(Name name, String password, 
 			String address, String email, String phone_num) {
 		
+		this.cust_num = 0;
 		this.name = name;
 		this.password = password;
+		this.address = address;
+		this.email = email;
+		this.phone_num = phone_num;
+		
+	}
+	
+	public Customer(int cust_num, Name name, String address, String email, String phone_num) {
+		
+		this.cust_num = cust_num;
+		this.name = name;
 		this.address = address;
 		this.email = email;
 		this.phone_num = phone_num;
@@ -43,7 +60,7 @@ public class Customer {
 	
 	public void saveCust() {
 		
-		String sql = ("INSERT into FrackHub_Test VALUES (seq_person.nextval,'" + name.getFirstName() + 
+		String sql = ("INSERT into member VALUES (seq_member.nextval,'" + name.getFirstName() + 
 				"','" + name.getSurname() + "','" + address + "','" + phone_num + "','" + email + "','" + password + "')");
 		
 		System.out.println(sql);
@@ -69,9 +86,9 @@ public class Customer {
 		   }
 	}
 
-	public Customer custSignIn(String custEmail, String password) {
+	public Customer custSignIn(String custEmail, JPasswordField password) {
 		
-		String sql = ("SELECT * FROM FrackHub_Test WHERE EMAIL = '" + custEmail + "' AND PASSWORD = '" + password + "'");
+		String sql = ("SELECT * FROM member WHERE EMAIL = '" + custEmail + "' AND PASSWORD = '" + new String(password.getPassword()) + "'");
 		
 		System.out.println(sql);
 		
@@ -89,14 +106,16 @@ public class Customer {
 		       ResultSet rs = stmt.executeQuery(sql);
 
 		       while (rs.next()) {
-		       String new_name = rs.getString("name");
-		       String last_name = rs.getString("surname");
-		       String new_address = rs.getString("address");
-		       String new_email = rs.getString("email");
-		       String new_phone_num = rs.getString("contact_number");
-		       
-		       
-		       new_cust = new Customer(new Name(new_name + " " + last_name), password, new_address, new_email, new_phone_num);
+		    	   int new_cust_num = rs.getInt("id");
+			       String new_name = rs.getString("name");
+			       String last_name = rs.getString("surname");
+			       String new_address = rs.getString("address");
+			       String new_email = rs.getString("email");
+			       String new_phone_num = rs.getString("contact_number");
+			       
+			       
+			       new_cust = new Customer(new_cust_num, new Name(new_name + " " + last_name), 
+			    		   					new_address, new_email, new_phone_num);
 		       }
 		       con.close();
 		       
@@ -109,9 +128,78 @@ public class Customer {
 		
 		return new_cust;
 	}
+	
+	public Item[] viewItems() {
+		
+		String sql1 = ("SELECT COUNT(*) AS count FROM Items WHERE email = '" + email + "'");
+		String sql2 = ("SELECT * FROM Items WHERE email = '" + email + "'");
+		
+		System.out.println(sql1);
+		
+		Connection con = null;
+		
+		int item_count = 0;
+		
+		try {
+		       DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
+		       System.out.println("Connecting to Database...");
+		       con = DriverManager.getConnection(url);
+		       
+		       Statement stmt = con.createStatement();
+		       
+		       ResultSet rs = stmt.executeQuery(sql1);
 
+		       while (rs.next()) {
+		    	   item_count = rs.getInt("count");
+		       }
+		       
+		       item_list = new Item[item_count];
+		       
+		   }
+
+		catch (Exception ex) {
+	
+		       System.err.println(ex);
+		   }
+		
+		try {
+		       DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
+		       System.out.println("Connecting to Database...");
+		       con = DriverManager.getConnection(url);
+		       
+		       Statement stmt = con.createStatement();
+		       
+		       ResultSet rs = stmt.executeQuery(sql2);
+		       
+		       int i = 0;
+
+		       while (rs.next()) {
+		       int new_item_num = rs.getInt("item_num");
+		       String new_name = rs.getString("name");
+		       String new_description = rs.getString("description");
+		       String new_type = rs.getString("type");
+		       double new_value = rs.getDouble("value");
+		       double new_daily_rate = rs.getDouble("daily_rate");
+		       
+		       Item new_item = new Item(new_item_num, this.cust_num, new_name, new_type, new_description, new_value, new_daily_rate);
+		       item_list[i] = new_item;
+		       i++;		    
+
+		       }
+		       
+		   }
+
+		catch (Exception ex) {
+	
+		       System.err.println(ex);
+		   }
+		
+		return item_list;
+		
+	}
+	
 	public int emailIsUnique(){
-		String sql = ("SELECT COUNT(*) AS count FROM FrackHub_Test WHERE email = '" + email + "'");
+		String sql = ("SELECT COUNT(*) AS count FROM member WHERE email = '" + email + "'");
 
 		Connection con = null;
 		int num = 2;
@@ -177,7 +265,14 @@ public class Customer {
 	public void setPhone_num(String phone_num) {
 		this.phone_num = phone_num;
 	}
-	
-	
 
+	public int getCust_num() {
+		return cust_num;
+	}
+
+	public void setCust_num(int cust_num) {
+		this.cust_num = cust_num;
+	}
+	
+	
 }

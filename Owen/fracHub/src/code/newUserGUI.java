@@ -77,12 +77,15 @@ public class newUserGUI implements ActionListener{
 						Name userName = new Name(txtFirstName.getText() + " " + txtLastName.getText());
 						Customer cust = new Customer(userName, txtPassword.getText(), 
 						txtAddress.getText(), txtEmail.getText(), txtPhoneNum.getText());
-						cust.printCust();
-						cust.saveCust();
-						//userInfoGUI new_panel = new userInfoGUI();
-						//new_panel.userInfo(user, frame);
-						optionMenuGUI new_panel = new optionMenuGUI();
-						new_panel.optionMenu(cust, frame);
+						if (cust.emailIsUnique() == 0) {
+							cust.saveCust();
+							optionMenuGUI new_panel = new optionMenuGUI();
+							new_panel.optionMenu(cust, frame);
+						}
+						else {
+							newUser(frame);
+							inputWarning("Email is already in use.");
+						}
 					}
 					else {
 						newUser(frame);
