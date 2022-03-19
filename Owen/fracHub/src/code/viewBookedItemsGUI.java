@@ -30,19 +30,20 @@ public class viewBookedItemsGUI implements ActionListener{
 	JLabel lblEndDate = new JLabel("End Date");
 	JLabel lblDailyCost = new JLabel("Daily Cost (�)");
 	JLabel lblTotalCost = new JLabel("Total Cost (�)");
-	JLabel lblType2 = new JLabel("N/A");
-	JLabel lblName2 = new JLabel("N/A");
-	JLabel lblItemDescription = new JLabel("N/A");
-	JLabel lblStartDate2 = new JLabel("N/A");
-	JLabel lblEndDate2 = new JLabel("N/A");
-	JLabel lblItemDailyCost = new JLabel("N/A");
-	JLabel lblTotalCost2 = new JLabel("N/A");
+	JLabel lblType2 = new JLabel("Test Type");
+	JLabel lblName2 = new JLabel("Test Name");
+	JLabel lblItemDescription = new JLabel("test desc");
+	JLabel lblStartDate2 = new JLabel("19/03/2022");
+	JLabel lblEndDate2 = new JLabel("21/03/2022");
+	JLabel lblItemDailyCost = new JLabel("0.75");
+	JLabel lblTotalCost2 = new JLabel("2.25");
 	
 
 	JComboBox<String> itemList;
 	JComboBox<String> yearList;
 	JComboBox<String> monthList;
-	String[] item_list = {"mm", "nn", "lallala"};
+	//ArrayList<String> item_list;
+	String[] item_list = {"TEST1", "test2", "test3"};
 	String[] year_list = {"2022", "2023", "2024"};
 	String[] month_list = {"January", "February", "March", "April", "May", "June",
 							"July", "August", "September", "October", "November", "December"};
@@ -121,6 +122,10 @@ public class viewBookedItemsGUI implements ActionListener{
 		frame.getContentPane().add(viewBookedItems3, BorderLayout.SOUTH);
 		frame.repaint();
 		frame.revalidate();
+	}
+	
+	public void updateItemList() {
+		
 	}
 	
 	public void actionPerformed(ActionEvent e) {
