@@ -8,6 +8,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Contains GUI to view the account statement for each month.
+ */
 
 public class monthlyAccountGUI implements ActionListener{
 	
@@ -46,12 +49,13 @@ public class monthlyAccountGUI implements ActionListener{
 	double[] monthInfo;
 	Map<String, Integer> map;
 
-	
+	// Function to create GUI page.
 	public void monthlyAccount(Customer new_cust, JFrame new_frame) {
 		
 		frame = new_frame;
 		cust = new_cust;
 		
+		// Layout settings for the page.
 		monthlyAccount = new JPanel();
 		monthlyAccount2 = new JPanel();
 		monthlyAccount3 = new JPanel();
@@ -65,9 +69,11 @@ public class monthlyAccountGUI implements ActionListener{
 		monthlyAccount2.setBackground(Color.white);
 		monthlyAccount3.setBackground(Color.white);
 
+		// Control button to go back to main menu.
 		btnReturnMM = new JButton("Main Menu");
 		btnReturnMM.addActionListener(this);
 			
+		// Selection lists for month and year.
 		LocalDate today = LocalDate.now();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM");
 		month = today.format(formatter);
@@ -80,6 +86,7 @@ public class monthlyAccountGUI implements ActionListener{
 		yearList.addActionListener(this);
 		monthList.addActionListener(this);
 		
+		// Account statement for selected month.
 		Booking booking = new Booking();
 		yearInfo = booking.monthlyAccountBooking(year, cust);
 		monthInfo = yearInfo[today.getMonthValue() - 1];
@@ -132,6 +139,7 @@ public class monthlyAccountGUI implements ActionListener{
 		map.put("December", 11);
 	}
 	
+	// Function to display warning message.
 	public void inputWarning(String message) {
 		
 		warningPanel = new JPanel();
@@ -143,11 +151,13 @@ public class monthlyAccountGUI implements ActionListener{
 		frame.revalidate();
 	}
 		
+	// Function for any events.
 	public void actionPerformed(ActionEvent e) {
 		
 		String selectedMonth = monthList.getSelectedItem().toString();
 		String selectedYear = yearList.getSelectedItem().toString();
 		
+		// When the month type in the JComboBox is changed the account statement is updated to the chosen month.
 		if (month != selectedMonth) {
 			
 			month = selectedMonth;
@@ -178,6 +188,7 @@ public class monthlyAccountGUI implements ActionListener{
 			
 		}
 		
+		// When the year type in the JComboBox is changed the new account details are loaded from the database.
 		if (year != Integer.parseInt(selectedYear)) {
 			
 			year = Integer.parseInt(selectedYear);
@@ -213,6 +224,7 @@ public class monthlyAccountGUI implements ActionListener{
 			frame.revalidate();		
 		}
 		
+		// When the main menu button is pressed the optionMenuGUI is created.
 		if(e.getSource() == btnReturnMM)
 		{
 			optionMenuGUI new_panel = new optionMenuGUI();

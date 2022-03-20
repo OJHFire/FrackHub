@@ -17,6 +17,9 @@ import code.Item.ItemResult;
 
 import com.github.lgooddatepicker.optionalusertools.DateChangeListener;
 
+/**
+ * Contains GUI to add bookings to the database.
+ */
 
 public class addBookingGUI implements ActionListener{
 	
@@ -62,12 +65,13 @@ public class addBookingGUI implements ActionListener{
 	static LocalDate newFirstDate;
     static LocalDate secondDate;
 
-	
+	// Function to create GUI page.
 	public void addBooking(Customer new_cust, JFrame new_frame) {
 		
 		frame = new_frame;
 		cust = new_cust;
 		
+		// Layout settings for the page.
 		addBooking = new JPanel();
 		addBooking2 = new JPanel();
 		addBooking.setLayout(new GridLayout(0,2,0,20));
@@ -77,12 +81,13 @@ public class addBookingGUI implements ActionListener{
 		addBooking.setBackground(Color.white);
 		addBooking2.setBackground(Color.white);
 				
+		// Control buttons to confirm booking or go back to main menu.
 		btnConType = new JButton("Confirm");
 		btnReturnMM = new JButton("Main Menu");
 		btnConType.addActionListener(this);
 		btnReturnMM.addActionListener(this);
 		
-		
+		// Selection buttons for booking.
 		type_list = new ArrayList<String>();
 		ItemResult itemResult = item.viewAllItems(cust);
 		
@@ -96,6 +101,7 @@ public class addBookingGUI implements ActionListener{
 		
 		boolean firstItem = true;
 		
+		// Creating list of items for given type.
 		for (int i = 0; i < item_list.size(); i++) {
 			
 			if (item_list.get(i).getType().equals(type)) {
@@ -171,6 +177,7 @@ public class addBookingGUI implements ActionListener{
 		frame.revalidate();		
 	}
 	
+	// Function to check save new booking if dates do not clash.
 	public void conNewBooking() {
 		
 		Booking booking = new Booking();
@@ -188,6 +195,7 @@ public class addBookingGUI implements ActionListener{
 		}
 	}
 	
+	// Function to display warning message.
 	public void inputWarning(String message) {
 		
 		warningPanel = new JPanel();
@@ -200,6 +208,8 @@ public class addBookingGUI implements ActionListener{
 	}
 
 	// Adapted from code on https://github.com/LGoodDatePicker/LGoodDatePicker/blob/master/Project/src/main/java/com/github/lgooddatepicker/demo/FullDemo.java
+	// Function for the start date calendar changing.
+	// The total cost is recalculated and end date calendar adjusted to not be before start date.
 	private static class SampleDateChangeListener implements DateChangeListener {
 
 		    public void dateChanged(DateChangeEvent event) {
@@ -232,6 +242,8 @@ public class addBookingGUI implements ActionListener{
 	  }
 	
 	// Adapted from code on https://github.com/LGoodDatePicker/LGoodDatePicker/blob/master/Project/src/main/java/com/github/lgooddatepicker/demo/FullDemo.java
+	// Function for the end date calendar changing.
+	// The total cost is recalculated.
 	private static class SampleDateChangeListener2 implements DateChangeListener {
 
 		  public void dateChanged(DateChangeEvent event) {
@@ -261,6 +273,7 @@ public class addBookingGUI implements ActionListener{
 	
 	
 	// Adapted from https://stackoverflow.com/questions/7732331/modify-combobox-display-in-swing.
+	// The JComboBox for items has been adjusted to display the item name.
 	public void setListToName(JComboBox<Item> list) {
 	
 			list.setRenderer(new DefaultListCellRenderer() {
@@ -283,6 +296,7 @@ public class addBookingGUI implements ActionListener{
 		    });
 	}
 		
+	// Function for any events.
 	public void actionPerformed(ActionEvent e) {
 		
 		String selectedType = itemTypeList.getSelectedItem().toString();
@@ -290,6 +304,7 @@ public class addBookingGUI implements ActionListener{
 		Item selectedItem = (Item)currentItemList.getSelectedItem();
 		int selectedItemNum = selectedItem.getItem_num();
 		
+		// When the item type in the JComboBox is changed the list of items are changed to that item type.
 		if (selectedType != type) {
 			
 			selectedType = itemTypeList.getSelectedItem().toString();
@@ -350,6 +365,7 @@ public class addBookingGUI implements ActionListener{
 			
 		}
 		
+		// When the item class selected in the JComboBox is changed the details for the item are all changed. 
 		else if (selectedItemNum != currentItem.getItem_num()) {
 			
 			selectedItem = (Item)currentItemList.getSelectedItem();
@@ -391,11 +407,13 @@ public class addBookingGUI implements ActionListener{
 			
 		}
 
+		// When the main menu button is pressed the optionMenuGUI is created.
 		if(e.getSource() == btnReturnMM)
 		{
 			optionMenuGUI new_panel = new optionMenuGUI();
 			new_panel.optionMenu(cust, frame);
 		}
+		// When the confirm button is pressed the booking dates are checked and if available saved.
 		else if(e.getSource() == btnConType)
 		{
 			conNewBooking();

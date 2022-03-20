@@ -4,10 +4,15 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Contains details of item bookings and the ability to save bookings to the database or check for clashes of dates.
+ */
+
 public class Booking {
 	
 	String url = "jdbc:oracle:thin:OPS$2042387/P46919@ora-srv.wlv.ac.uk:1521/catdb.wlv.ac.uk";
 	
+	// Instance variables.
 	private int booking_num;
 	private Item item;
 	private int lenderNum;
@@ -16,7 +21,7 @@ public class Booking {
 	private LocalDate end_date;
 	private double total_cost;
 
-	
+	// Default constructor.
 	public Booking() {
 		
 		booking_num = 0;
@@ -29,6 +34,7 @@ public class Booking {
 		
 	}
 	
+	// Parameterised constructor without booking number.
 	public Booking(Item item, int lenderNum, Customer borrower, LocalDate start_date, LocalDate end_date, double total_cost) {
 		
 		booking_num = 0;
@@ -41,6 +47,7 @@ public class Booking {
 		
 	}
 	
+	// Parameterised constructor with booking number.
 	public Booking(int booking_num, Item item, int lenderNum, Customer borrower, LocalDate start_date, LocalDate end_date, double total_cost) {
 		
 		this.booking_num = booking_num;
@@ -53,6 +60,7 @@ public class Booking {
 		
 	}
 	
+	// Function to save booking onto database.
 	public void saveBooking() {
 		
 		String sql = ("INSERT into Bookings VALUES (seq_booking.nextval," + item.getItem_num() + "," + 
@@ -82,6 +90,7 @@ public class Booking {
 		   }
 	}
 
+	// Function to check dates for booking are available for item.
 	public boolean checkBooking(int itemNum, String date1, String date2) {
 		
 		String sql = ("SELECT COUNT(*) as count FROM bookings WHERE itemID = " + itemNum +
@@ -124,9 +133,9 @@ public class Booking {
 		return true;
 	}
 	
+	// Function to return all debits and credits for a customer for a year.
 	public double[][] monthlyAccountBooking(int year, Customer cust) {
 		
-		//ArrayList<double[]> monthlyDetails = new ArrayList<double[]>();
 		double[][] monthlyDetails = new double[12][];
 		
 		String[] month_list = {"January", "February", "March", "April", "May", "June",

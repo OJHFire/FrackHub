@@ -4,12 +4,19 @@ import java.sql.*;
 
 import javax.swing.JPasswordField;
 
+/**
+ * Contains details of customers and the ability to save the customer details to the database, 
+ * confirm the correct email and password combination and view the items that they have put onto the system.
+ * 
+ */
+
 public class Customer {
 	
 	String url = "jdbc:oracle:thin:OPS$2042387/P46919@ora-srv.wlv.ac.uk:1521/catdb.wlv.ac.uk";
 	
 	Item[] item_list;
 	
+	// Instance variables.
 	private int cust_num;
 	private Name name;
 	private String password;
@@ -17,6 +24,7 @@ public class Customer {
 	private String email;
 	private String phone_num;
 	
+	// Default constructor.
 	public Customer() {
 		
 		cust_num = 0;
@@ -28,6 +36,7 @@ public class Customer {
 		
 	}
 	
+	// Parameterised constructor without customer number.
 	public Customer(Name name, String password, 
 			String address, String email, String phone_num) {
 		
@@ -40,6 +49,7 @@ public class Customer {
 		
 	}
 	
+	// Parameterised constructor with customer number.
 	public Customer(int cust_num, Name name, String address, String email, String phone_num) {
 		
 		this.cust_num = cust_num;
@@ -50,6 +60,7 @@ public class Customer {
 		
 	}
 	
+	// Functions to print customer details.
 	public void printCust() {
 		System.out.println("Name: " + name.getLastCommaFirst());
 		System.out.println("Address: " + address);
@@ -58,6 +69,7 @@ public class Customer {
 		System.out.println("Password: " + password);
 	}
 	
+	// Function to save customer details on the database.
 	public void saveCust() {
 		
 		String sql = ("INSERT into member VALUES (seq_member.nextval,'" + name.getFirstName() + 
@@ -86,6 +98,7 @@ public class Customer {
 		   }
 	}
 
+	// Function to find customer details from database with the email and password.
 	public Customer custSignIn(String custEmail, JPasswordField password) {
 		
 		String sql = ("SELECT * FROM member WHERE EMAIL = '" + custEmail + "' AND PASSWORD = '" + new String(password.getPassword()) + "'");
@@ -129,6 +142,7 @@ public class Customer {
 		return new_cust;
 	}
 	
+	// Function to find a list of items the customer has added to the system.
 	public Item[] viewItems() {
 		
 		String sql1 = ("SELECT COUNT(*) AS count FROM Items WHERE email = '" + email + "'");
@@ -198,6 +212,7 @@ public class Customer {
 		
 	}
 	
+	// Function to check if the email of a new user is unique on the database.
 	public int emailIsUnique(){
 		String sql = ("SELECT COUNT(*) AS count FROM member WHERE email = '" + email + "'");
 
