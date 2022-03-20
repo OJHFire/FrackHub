@@ -3,9 +3,11 @@ package code;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Contains GUI to view booking once added to the database.
+ */
 
 public class viewBookingGUI implements ActionListener{
 	
@@ -34,25 +36,13 @@ public class viewBookingGUI implements ActionListener{
 	JLabel lblItemDailyCost;
 	JLabel lblTotalCost2;
 	
-	JComboBox<String> itemTypeList;
-	JComboBox<Item> currentItemList;
-	ArrayList<Item> item_list;
-	ArrayList<String> type_list;
-	ArrayList<Item> current_item_list;
-	
-	Item[] item_list2;
-	Item[] current_item_list2;
-	String[] type_list2;
-	Item currentItem;
-	Item item = new Item();
-	String type;
-
-	
+	// Function to create GUI page.
 	public void viewBooking(Booking booking, Customer new_cust, JFrame new_frame) {
 		
 		frame = new_frame;
 		cust = new_cust;
 		
+		// Layout settings for the page.
 		viewBooking = new JPanel();
 		viewBooking2 = new JPanel();
 		viewBooking.setLayout(new GridLayout(0,2,0,20));
@@ -62,11 +52,13 @@ public class viewBookingGUI implements ActionListener{
 		viewBooking.setBackground(Color.white);
 		viewBooking2.setBackground(Color.white);
 				
+		// Control buttons to sign out or go back to main menu.
 		btnReturnMM = new JButton("Main Menu");
 		btnSignOut = new JButton("Sign Out");
 		btnReturnMM.addActionListener(this);
 		btnSignOut.addActionListener(this);
 		
+		// Labels for details of booking.
 		lblType2 = new JLabel(booking.getItem().getType());
 		lblName2 = new JLabel(booking.getItem().getName());
 		lblItemDescription = new JLabel(booking.getItem().getDescription());
@@ -102,14 +94,16 @@ public class viewBookingGUI implements ActionListener{
 		frame.revalidate();		
 	}
 	
-
+	// Function for any events.
 	public void actionPerformed(ActionEvent e) {
 
+		// When the main menu button is pressed the optionMenuGUI is created.
 		if(e.getSource() == btnReturnMM)
 		{
 			optionMenuGUI new_panel = new optionMenuGUI();
 			new_panel.optionMenu(cust, frame);
 		}
+		// When the sign out button is pressed the mainMenuGUI is created.
 		else if(e.getSource() == btnSignOut)
 		{
 			mainMenuGUI new_panel = new mainMenuGUI();

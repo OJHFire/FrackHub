@@ -3,10 +3,17 @@ package code;
 import java.sql.*;
 import java.util.*;
 
+/**
+ * Contains details of items and the ability to save the item details to the database, 
+ * and find all items in the database that are not the customers.
+ * 
+ */
+
 public class Item {
 	
 	String url = "jdbc:oracle:thin:OPS$2042387/P46919@ora-srv.wlv.ac.uk:1521/catdb.wlv.ac.uk";
 	
+	// Instance variables.
 	private int item_num;
 	private int cust_num;
 	private String name;
@@ -15,6 +22,7 @@ public class Item {
 	private double value;
 	private double daily_rate;
 	
+	// Default constructor.
 	public Item() {
 		
 		item_num = 0;
@@ -27,6 +35,7 @@ public class Item {
 		
 	}
 	
+	// Parameterised constructor without item number.
 	public Item(int cust_num, String name, String type, String description, double value, double daily_rate) {
 		
 		this.item_num = 0;
@@ -39,6 +48,7 @@ public class Item {
 		
 	}
 	
+	// Parameterised constructor with item number.
 	public Item(int item_num, int cust_num, String name, String type, String description, double value, double daily_rate) {
 		
 		this.item_num = item_num;
@@ -51,6 +61,7 @@ public class Item {
 		
 	}
 	
+	// Function to save item to the database.
 	public void saveItem() {
 		
 		String sql = ("INSERT into Items VALUES (seq_item.nextval," + cust_num + ",'" + name + "','" +
@@ -79,6 +90,7 @@ public class Item {
 		   }
 	}
 	
+	// Function to return an array list of all items that do not belong to the customer.
 	public ItemResult viewAllItems(Customer cust) {
 		
 		String sql1 = ("SELECT distinct type FROM items WHERE userid != " + cust.getCust_num());

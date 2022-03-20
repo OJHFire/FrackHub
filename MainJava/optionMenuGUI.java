@@ -4,6 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+/**
+ * Contains GUI to for the options menu once signed in.
+ */
+
 public class optionMenuGUI implements ActionListener{
 	
 	JFrame frame;
@@ -19,17 +23,19 @@ public class optionMenuGUI implements ActionListener{
 	JButton btnViewBookedItems;
 	JButton btnViewMonthlyReport;
 
-	
+	// Function to create GUI page.
 	public void optionMenu(Customer new_cust, JFrame new_frame) {
 	
 		frame = new_frame;
 		cust = new_cust;
-		optionMenu = new JPanel();
 		
+		// Layout settings for the page.
+		optionMenu = new JPanel();
 		optionMenu.setBorder(BorderFactory.createEmptyBorder(50,120,20,120));
-
 		optionMenu.setBackground(Color.white);
-		optionMenu.setLayout(new GridLayout(7,0,0,10));		
+		optionMenu.setLayout(new GridLayout(7,0,0,10));	
+		
+		// Buttons for each menu option.
 		btnCustInfo = new JButton("Customer Information");
 		btnAddItem = new JButton("Add Item");
 		btnBookItem = new JButton("Book an Item");
@@ -59,6 +65,7 @@ public class optionMenuGUI implements ActionListener{
 		frame.revalidate();
 	}
 	
+	// Function for any events.
 	public void actionPerformed(ActionEvent e) {
 
 		if(e.getSource() == btnCustInfo)

@@ -4,6 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+/**
+ * Contains GUI to add new members to the database.
+ */
+
 public class newUserGUI implements ActionListener{
 	
 	JFrame frame;
@@ -29,9 +33,12 @@ public class newUserGUI implements ActionListener{
 	JLabel lblPhoneNum = new JLabel("Phone Number");
 	JLabel lblPassword = new JLabel("Password");
 	
+	// Function to create GUI page.
 	public void newUser(JFrame new_frame) {
 		
 		frame = new_frame;
+		
+		// Layout settings for the page.
 		newUser = new JPanel();
 		newUser2 = new JPanel();
 		newUser.setBorder(BorderFactory.createEmptyBorder(50,20,0,20));
@@ -40,11 +47,14 @@ public class newUserGUI implements ActionListener{
 		newUser2.setLayout(new GridLayout(0,2,20,10));	
 		newUser.setBackground(Color.white);
 		newUser2.setBackground(Color.white);
+		
+		// Control buttons to confirm add new customer or go back to main menu.
 		btnConNewUser = new JButton("Confirm");
 		btnConNewUser.addActionListener(this);
 		btnReturnMM = new JButton("Main Menu");
 		btnReturnMM.addActionListener(this);
 	
+		// Inputs for customer information.
 		newUser.add(lblFirstName);
 		newUser.add(txtFirstName);
 		newUser.add(lblLastName);
@@ -68,6 +78,7 @@ public class newUserGUI implements ActionListener{
 		frame.revalidate();		
 	}
 	
+	// Function to add new member to the database if all the input details are as expected.
 	public void conNewUser() {
 			
 			if ((!txtFirstName.getText().isEmpty()) && (!txtLastName.getText().isEmpty()) && (!txtAddress.getText().isEmpty()) &&
@@ -103,6 +114,7 @@ public class newUserGUI implements ActionListener{
 			}
 		}
 	
+	// Function to display warning message.
 	public void inputWarning(String message) {
 		
 		warningPanel = new JPanel();
@@ -115,11 +127,13 @@ public class newUserGUI implements ActionListener{
 	}
 	
 	// Adapted from code on https://www.tutorialspoint.com/validate-email-address-in-java
+	// Function to check the String is in the correct form for an email.
 	public boolean isValid(String email) {
 	      String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
 	      return email.matches(regex);
 	   }
 	
+	// Function to check a String is made up of numbers.
 	public boolean checkNumeric(String s) {
 		try 
 		{
@@ -133,12 +147,15 @@ public class newUserGUI implements ActionListener{
 		}
 	}	
 	
+	// Function for any events.
 	public void actionPerformed(ActionEvent e) {
 
+		// When the confirm button is pressed the customer details are checked and if ok saved to the database.
 		if(e.getSource() == btnConNewUser)
 		{
 			conNewUser();
 		}
+		// When the main menu button is pressed the optionMenuGUI is created.
 		else if(e.getSource() == btnReturnMM)
 		{
 			mainMenuGUI new_panel = new mainMenuGUI();

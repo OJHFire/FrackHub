@@ -4,6 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+/**
+ * Contains GUI to input email and password and sign in to the application.
+ */
+
 public class signInGUI implements ActionListener{
 	
 	JFrame frame;
@@ -21,6 +25,7 @@ public class signInGUI implements ActionListener{
 	JLabel lblEmail = new JLabel("Email");
 	JLabel lblPassword = new JLabel("Password");
 	
+	// Function to create GUI page.
 	public void signIn(JFrame new_frame) {
 	
 		frame = new_frame;
@@ -32,11 +37,14 @@ public class signInGUI implements ActionListener{
 		signIn2.setLayout(new GridLayout(0,2,20,10));
 		signIn.setBackground(Color.white);
 		signIn2.setBackground(Color.white);
+		
+		// Control buttons to confirm sign in or go back to main menu.
 		btnConSignIn = new JButton("Continue");
 		btnConSignIn.addActionListener(this);
 		btnReturnMM = new JButton("Main Menu");
 		btnReturnMM.addActionListener(this);
 		
+		// Inputs for email and password.
 		signIn.add(lblEmail);
 		signIn.add(txtEmail);
 		signIn.add(lblPassword);
@@ -51,6 +59,7 @@ public class signInGUI implements ActionListener{
 		frame.revalidate();		
 	}
 	
+	// Function to check inputs and if in the database go to the options menu.
 	public void conSignIn() {
 		if (!txtEmail.getText().isEmpty()) {
 			if (txtPassword.getPassword().length != 0) {
@@ -77,6 +86,7 @@ public class signInGUI implements ActionListener{
 		}
 	}
 	
+	// Function to display warning message.
 	public void inputWarning(String message) {
 			
 			warningPanel = new JPanel();
@@ -88,12 +98,16 @@ public class signInGUI implements ActionListener{
 			frame.revalidate();
 		}
 	
+	// Function for any events.
 	public void actionPerformed(ActionEvent e) {
 
+		// When the confirm button is pressed the details are checked in the database 
+		//	and the options page is opened if correct.
 		if(e.getSource() == btnConSignIn)
 		{
 			conSignIn();
 		}
+		// When the main menu button is pressed the mainMenuGUI is created.
 		else if(e.getSource() == btnReturnMM)
 		{
 			mainMenuGUI new_panel = new mainMenuGUI();

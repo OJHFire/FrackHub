@@ -4,19 +4,12 @@ package code;
 
 import javax.swing.*;
 
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Document;
-import javax.swing.text.DocumentFilter;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.text.Format;
 
 public class newItemGUI implements ActionListener {
 
@@ -268,7 +261,9 @@ public class newItemGUI implements ActionListener {
 						costPerDay = Double.parseDouble(txtFieldCostPerDay.getText());
 						//Add to database
 						Item new_item = new Item(cust.getCust_num(), itemName, itemType, itemDescription, value, costPerDay);
-						new_item.saveItem();						
+						new_item.saveItem();		
+						itemInfoGUI new_panel = new itemInfoGUI();
+						new_panel.itemInfo(new_item, cust, frame);	
 						
 					}else 
 					{

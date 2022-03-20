@@ -3,6 +3,9 @@ package code;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The GUI class to create the GUI and set the frame parameters.
+ */
 
 public class GUI {
 	
