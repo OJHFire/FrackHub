@@ -130,7 +130,9 @@ public class newItemGUI implements ActionListener {
 		// Item Type
 		comboItemType.setBackground(Color.WHITE);
 		comboItemType.setModel(
-				new DefaultComboBoxModel<String>(new String[] { "Book", "Craft", "Digital", "Electronic", "Garden"  }));
+				new DefaultComboBoxModel<String>(new String[] { "Arts and Crafts", "Books", "Clothing and Accessories", 
+													"Electronics", "Family", "Garden", "Kitchen", "Stationary", 
+													"Tools and Equipment", "Vehicles"  }));
 		gbc_comboItemType = new GridBagConstraints();
 		gbc_comboItemType.insets = new Insets(0, 0, 5, 5);
 		gbc_comboItemType.fill = GridBagConstraints.HORIZONTAL;
