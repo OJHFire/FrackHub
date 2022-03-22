@@ -68,8 +68,8 @@ public class userInfoGUI implements ActionListener{
 		userInfo.add(lblPhoneNum2);
 		//userInfo.add(lblPassword);
 		//userInfo.add(lblPassword2);
-		userInfo2.add(btnReturnMM);
 		userInfo2.add(btnSignOut);
+		userInfo2.add(btnReturnMM);
 		
 		frame.getContentPane().removeAll();
 		frame.getContentPane().add(userInfo, BorderLayout.NORTH);
