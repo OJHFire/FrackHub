@@ -93,7 +93,7 @@ public class Item {
 	// Function to return an array list of all items that do not belong to the customer.
 	public ItemResult viewAllItems(Customer cust) {
 		
-		String sql1 = ("SELECT distinct type FROM items WHERE userid != " + cust.getCust_num());
+		String sql1 = ("SELECT distinct type FROM items WHERE userid != " + cust.getCust_num() + " ORDER BY type ASC");
 		String sql2 = ("SELECT * FROM items WHERE userid != " + cust.getCust_num());
 		
 		System.out.println(sql1);
