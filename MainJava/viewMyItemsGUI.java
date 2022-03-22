@@ -1,18 +1,18 @@
+package code;
+   
+import java.util.*;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 
 import javax.swing.*;
 
 public class viewMyItemsGUI implements ActionListener {
 
 	JFrame frame;
+	Customer cust;
 
 	JPanel topPanel;
 	JPanel centerPanel;
@@ -40,25 +40,30 @@ public class viewMyItemsGUI implements ActionListener {
 	int totalItems = 0;
 	int userId;
 
+	ArrayList<Item> item_list;
+	Item[] item_list_array;
 	String itemName;
 	String itemType;
 	String itemDescription;
 	double itemValue;
 	double itemCostPerDay;
+	
+	
+	public void viewItem(Customer new_cust, JFrame new_frame) {
 
-	viewMyItemsGUI(int id) {
-		userId = id;
-		viewItem(new JFrame());
-	}
+		frame = new_frame;
+		cust = new_cust;
+		
+		//frame.setVisible(true);
+		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-	public void viewItem(JFrame new_Frame) {
-
-		frame = new_Frame;
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		frame.setBounds(50, 50, 450, 500);
-
+		//frame.setBounds(50, 50, 450, 500);
+		
+		// Get Total Items
+		if (count == 0) {
+			loadItemList();
+		}
+				
 		// TOP PANEL
 		topPanel = new JPanel();
 		lblTitle.setFont(new Font("Serif", Font.BOLD, 30));
@@ -73,16 +78,18 @@ public class viewMyItemsGUI implements ActionListener {
 
 		centerPanel.setBorder(BorderFactory.createEmptyBorder(0,20,0,20));
 
-		// Get Total Items
-		if (totalItems == 0) {
-			getTotalItems();
-		}
-		// GET NEXT ITEM
-		if (count + 1 <= totalItems) {
-			count++;
-			getItem(count);
 
-			lblItemNum.setText(count+ " of " + totalItems);
+		// GET NEXT ITEM
+		if (count < totalItems) {
+			
+			itemName = item_list_array[count].getName();
+			itemType = item_list_array[count].getType();
+			itemDescription = item_list_array[count].getDescription();
+			itemValue = item_list_array[count].getValue();
+			itemCostPerDay = item_list_array[count].getDaily_rate();
+			
+
+			lblItemNum.setText((count + 1)+ " of " + totalItems);
 			centerPanel.add(lblNum);
 			centerPanel.add(lblItemNum);
 
@@ -98,17 +105,20 @@ public class viewMyItemsGUI implements ActionListener {
 			centerPanel.add(lblDescription);
 			centerPanel.add(lblItemDescription);
 
-			lblItemValue.setText("£"+itemValue);
+			lblItemValue.setText("£"+String.format("%.2f",itemValue));
 			centerPanel.add(lblValue);
 			centerPanel.add(lblItemValue);
 
-			lblItemCostPerDay.setText("£"+itemCostPerDay);
+			lblItemCostPerDay.setText("£"+String.format("%.2f",itemCostPerDay));
 			centerPanel.add(lblCostPerDay);
 			centerPanel.add(lblItemCostPerDay);
 			
+			count++;
+			
 		}else {
 			//Display NO Items Message
-			lblNum.setText("You have not uploaded any items yet");
+			lblNum.setText("You have not uploaded any items yet.");
+			centerPanel.add(lblNum);
 			
 		}
 		
@@ -133,67 +143,26 @@ public class viewMyItemsGUI implements ActionListener {
 		frame.getContentPane().add(topPanel, BorderLayout.NORTH);
 		frame.getContentPane().add(centerPanel, BorderLayout.CENTER);
 		frame.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+		frame.repaint();
+		frame.revalidate();
 	}
-
-	private void getTotalItems() {
-		try {
-			// Connect to the Database
-			DriverManager.registerDriver(new oracle.jdbc.OracleDriver());// Creating Connection Object
-			System.out.println("Connecting to Database...");
-			Connection connection = DriverManager
-					.getConnection("jdbc:oracle:thin:OPS$2042387/P46919@ora-srv.wlv.ac.uk:1521/catdb.wlv.ac.uk");
-			System.out.println("COnnected with database");
-			// Statement
-			Statement selectStmt = connection.createStatement();
-
-			// Search for the Email and passwords in the Database
-			ResultSet result_set = selectStmt.executeQuery("SELECT COUNT(*) from Items where userID =" + userId);
-			while (result_set.next()) {
-				totalItems = result_set.getInt(1);
-				System.out.println("Total Items are: " + totalItems);
-			}
-
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-	}
-
-	private void getItem(int count) {
-		try {
-			// Connect to the Database
-			DriverManager.registerDriver(new oracle.jdbc.OracleDriver());// Creating Connection Object
-			System.out.println("Connecting to Database...");
-			Connection connection = DriverManager
-					.getConnection("jdbc:oracle:thin:OPS$2042387/P46919@ora-srv.wlv.ac.uk:1521/catdb.wlv.ac.uk");
-			System.out.println("COnnected with database");
-			// Statement
-			Statement selectStmt = connection.createStatement();
-
-			// Search for the Email and passwords in the Database
-			ResultSet result_set = selectStmt
-					.executeQuery("Select Id, Name, Type, Description, Value, Borrow_Cost FROM Items Where Id =" + count
-							+ "and userId = " + userId);
-			
-			System.out.println("Count: "+ count);
-			while (result_set.next()) {
-				itemName = result_set.getString(2);
-				itemType = result_set.getString(3);
-				itemDescription = result_set.getString(4);
-				itemValue = result_set.getDouble(5);
-				itemCostPerDay = result_set.getDouble(6);
-			}
-
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
+	
+	public void loadItemList() {
+		Item item = new Item();
+		item_list = item.viewAllMyItems(cust);
+		totalItems = item_list.size();
+		item_list_array = item_list.toArray(new Item[totalItems]);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnNext) {
-			System.out.println("Next");
-			viewItem(frame);
-			
+			viewItem(cust, frame);		
+		}
+		else if(e.getSource() == btnBack)
+		{
+			optionMenuGUI new_panel = new optionMenuGUI();
+			new_panel.optionMenu(cust, frame);
 		}
 
 	}
