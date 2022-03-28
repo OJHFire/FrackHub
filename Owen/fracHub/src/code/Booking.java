@@ -1,8 +1,13 @@
 package code;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+
+import code.Item.ItemResult;
 
 public class Booking {
 	
@@ -15,6 +20,8 @@ public class Booking {
 	private LocalDate start_date;
 	private LocalDate end_date;
 	private double total_cost;
+	private int borrower_num;
+	private int item_num;
 
 	
 	public Booking() {
@@ -47,6 +54,18 @@ public class Booking {
 		this.item = item;
 		this.lenderNum = lenderNum;
 		this.borrower = borrower;
+		this.start_date = start_date;
+		this.end_date = end_date;
+		this.total_cost = total_cost;	
+		
+	}
+	
+	public Booking(int booking_num, int item_num, int lenderNum, int borrower_num, LocalDate start_date, LocalDate end_date, double total_cost) {
+		
+		this.booking_num = booking_num;
+		this.item_num = item_num;
+		this.lenderNum = lenderNum;
+		this.borrower_num = borrower_num;
 		this.start_date = start_date;
 		this.end_date = end_date;
 		this.total_cost = total_cost;	
@@ -122,6 +141,70 @@ public class Booking {
 		       System.err.println(ex);
 		   }
 		return true;
+	}
+	
+	public Booking[] viewAllBookings(Customer cust) {
+		
+		
+		
+		String sql1 = ("SELECT * FROM bookings WHERE borrowerID = " + cust.getCust_num());
+		
+		System.out.println(sql1);
+		
+		Connection con = null;
+		
+		ArrayList<Booking> booking_list = new ArrayList<Booking>();
+		
+		try {
+		       DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
+		       System.out.println("Connecting to Database...");
+		       con = DriverManager.getConnection(url);
+		       
+		       Statement stmt = con.createStatement();
+		  
+		       
+		       ResultSet rs1 = stmt.executeQuery(sql1);
+
+		       while (rs1.next()) {
+
+		    	   int new_order_id = rs1.getInt("ORDERID");
+		    	   int new_user_id = rs1.getInt("USERID");
+		    	   int new_item_id = rs1.getInt("ITEMID");
+		    	   int new_borrower_id = rs1.getInt("BORROWERID");
+		    	   Date new_start_date = rs1.getDate("STARTDATE");
+		    	   Date new_end_date = rs1.getDate("ENDDATE");
+		    	   double new_total_cost = rs1.getDouble("TOTALCOST");
+		    	   
+		    	   System.out.println(new_end_date);
+		    	   
+		    	   LocalDate start_date = LocalDate.parse(new_start_date.toString());
+		    	   LocalDate end_date = LocalDate.parse(new_end_date.toString());
+		    	   
+		    	   //LocalDate start_date = LocalDate.parse(new_start_date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		    	   //LocalDate end_date = LocalDate.parse(new_end_date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		    	   
+		    	   
+		    	   //LocalDate start_date = new_start_date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		    	   //LocalDate end_date = new_end_date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		    	   Booking new_booking = new Booking(new_order_id, new_user_id, new_item_id, new_borrower_id,
+		    			   				start_date, end_date, new_total_cost);
+		    	   
+		    	   System.out.println(end_date.toString());
+		    	   
+		    	   booking_list.add(new_booking);   
+
+		       }
+		       
+		   }
+
+		catch (Exception ex) {
+	
+		       System.err.println(ex);
+		   }
+		
+		Booking[] booking_list2 = booking_list.toArray(new Booking[booking_list.size()]);
+		
+		return booking_list2;
 	}
 	
 	public double[][] monthlyAccountBooking(int year, Customer cust) {

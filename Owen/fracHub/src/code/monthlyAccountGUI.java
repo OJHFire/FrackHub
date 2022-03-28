@@ -28,7 +28,7 @@ public class monthlyAccountGUI implements ActionListener{
 	JLabel lblNoOfBorrows = new JLabel("Items loaned to you");
 	JLabel lblNoOfBorrows2;
 	JLabel lblDebit = new JLabel("Debit (�)");
-	JLabel lblDebit2;
+	JLabel lblDebit2; 
 	JLabel lblCredit = new JLabel("Credit (�)");
 	JLabel lblCredit2;
 	JLabel lblTotalCost = new JLabel("Total Monthly Fee (�)");

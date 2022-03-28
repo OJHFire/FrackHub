@@ -3,6 +3,7 @@ package code;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Map;
 import java.time.LocalDate;
@@ -19,8 +20,6 @@ public class viewBookedItemsGUI implements ActionListener{
 	
 	JButton btnReturnMM;
 	
-	JLabel lblMonth = new JLabel("Month");
-	JLabel lblYear = new JLabel("Year");
 	JLabel lblItem = new JLabel("Item");
 	
 	JLabel lblType = new JLabel("Item type");
@@ -28,36 +27,24 @@ public class viewBookedItemsGUI implements ActionListener{
 	JLabel lblDescription = new JLabel("Description");
 	JLabel lblStartDate = new JLabel("Start Date");
 	JLabel lblEndDate = new JLabel("End Date");
-	JLabel lblDailyCost = new JLabel("Daily Cost (ï¿½)");
-	JLabel lblTotalCost = new JLabel("Total Cost (ï¿½)");
-	JLabel lblType2 = new JLabel("Test Type");
-	JLabel lblName2 = new JLabel("Test Name");
-	JLabel lblItemDescription = new JLabel("test desc");
-	JLabel lblStartDate2 = new JLabel("19/03/2022");
-	JLabel lblEndDate2 = new JLabel("21/03/2022");
-	JLabel lblItemDailyCost = new JLabel("0.75");
-	JLabel lblTotalCost2 = new JLabel("2.25");
+	JLabel lblDailyCost = new JLabel("Daily Cost (£)");
+	JLabel lblTotalCost = new JLabel("Total Cost (£)");
+	JLabel lblType2;
+	JLabel lblName2;
+	JLabel lblItemDescription;
+	JLabel lblStartDate2;
+	JLabel lblEndDate2;
+	JLabel lblItemDailyCost;
+	JLabel lblTotalCost2;
+	
+	Booking[] b_list;
 	
 
 	JComboBox<String> itemList;
-	JComboBox<String> yearList;
-	JComboBox<String> monthList;
-	//ArrayList<String> item_list;
-	String[] item_list = {"TEST1", "test2", "test3"};
-	String[] year_list = {"2022", "2023", "2024"};
-	String[] month_list = {"January", "February", "March", "April", "May", "June",
-							"July", "August", "September", "October", "November", "December"};
 	
-	Item[] item_list2;
-	Item[] current_item_list2;
-	String[] type_list2;
 	Item currentItem;
 	Item item = new Item();
-	String type;
-	String month;
-	int year;
-	double[][] yearInfo;
-	double[] monthInfo;
+	String bookingNums;
 	Map<String, Integer> map;
 	
 	public void viewBookedItems(Customer new_cust, JFrame new_frame) {
@@ -79,34 +66,34 @@ public class viewBookedItemsGUI implements ActionListener{
 		btnReturnMM = new JButton("Main Menu");
 		btnReturnMM.addActionListener(this);
 		
-		LocalDate today = LocalDate.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM");
-		month = today.format(formatter);
-		year = today.getYear();
+		Booking b1 = new Booking();
+		b_list = b1.viewAllBookings(cust);
+		double totalCost = b_list[0].getTotal_cost();
 		
-		yearList = new JComboBox<String>(year_list);
-		monthList = new JComboBox<String>(month_list);
-		itemList = new JComboBox<String>(item_list);
-		yearList.setSelectedItem(String.valueOf(year));
-		monthList.setSelectedItem(month);
-		yearList.addActionListener(this);
-		monthList.addActionListener(this);
+		String[] booking_num_list = new String[b_list.length];
 		
-		viewBookedItems.add(lblYear);
-		viewBookedItems.add(yearList);
-		viewBookedItems.add(lblMonth);
-		viewBookedItems.add(monthList);
+		
+		for(int i = 1; i <= b_list.length; i++) {
+			booking_num_list[i-1] = Integer.toString(i);
+		}
+		
+		itemList = new JComboBox<String>(booking_num_list);
+		itemList.addActionListener(this);
+		bookingNums = itemList.getSelectedItem().toString();
+		
+		
+		lblName2 = new JLabel(Integer.toString(b_list[0].getBooking_num()));
+		lblStartDate2 = new JLabel(b_list[0].getStart_date().toString());
+		lblEndDate2 = new JLabel(b_list[0].getEnd_date().toString());
+		lblTotalCost2 = new JLabel(Double.toString(totalCost));
+		
+
 		viewBookedItems.add(lblItem);
 		viewBookedItems.add(itemList);
 		
-		viewBookedItems2.add(lblType);
-		viewBookedItems2.add(lblType2);
+		
 		viewBookedItems2.add(lblName);
 		viewBookedItems2.add(lblName2);
-		viewBookedItems2.add(lblDescription);
-		viewBookedItems2.add(lblItemDescription);
-		viewBookedItems2.add(lblDailyCost);
-		viewBookedItems2.add(lblItemDailyCost);
 		viewBookedItems2.add(lblTotalCost);
 		viewBookedItems2.add(lblTotalCost2);
 		viewBookedItems2.add(lblStartDate);
@@ -121,14 +108,40 @@ public class viewBookedItemsGUI implements ActionListener{
 		frame.getContentPane().add(viewBookedItems2, BorderLayout.CENTER);
 		frame.getContentPane().add(viewBookedItems3, BorderLayout.SOUTH);
 		frame.repaint();
-		frame.revalidate();
-	}
-	
-	public void updateItemList() {
+		frame.revalidate();	
 		
 	}
 	
 	public void actionPerformed(ActionEvent e) {
+		
+		String newBookingNums = itemList.getSelectedItem().toString();
+		
+		if(newBookingNums != bookingNums) {
+			bookingNums = newBookingNums;
+			double totalCost = b_list[Integer.parseInt(bookingNums) - 1].getTotal_cost();
+			
+			lblName2 = new JLabel(Integer.toString(b_list[Integer.parseInt(bookingNums) - 1].getBooking_num()));
+			lblStartDate2 = new JLabel(b_list[Integer.parseInt(bookingNums) - 1].getStart_date().toString());
+			lblEndDate2 = new JLabel(b_list[Integer.parseInt(bookingNums) - 1].getEnd_date().toString());
+			lblTotalCost2 = new JLabel(Double.toString(totalCost));
+			
+			viewBookedItems2.removeAll();
+			viewBookedItems2.add(lblName);
+			viewBookedItems2.add(lblName2);
+			viewBookedItems2.add(lblTotalCost);
+			viewBookedItems2.add(lblTotalCost2);
+			viewBookedItems2.add(lblStartDate);
+			viewBookedItems2.add(lblStartDate2);
+			viewBookedItems2.add(lblEndDate);
+			viewBookedItems2.add(lblEndDate2);
+			
+			
+			frame.getContentPane().remove(viewBookedItems2);
+			frame.getContentPane().add(viewBookedItems2, BorderLayout.CENTER);
+			frame.repaint();
+			frame.revalidate();
+			
+		}
 
 		if(e.getSource() == btnReturnMM)
 		{
