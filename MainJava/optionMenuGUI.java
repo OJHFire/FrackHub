@@ -88,11 +88,11 @@ public class optionMenuGUI implements ActionListener{
 			viewMyItemsGUI new_panel = new viewMyItemsGUI();
 			new_panel.viewItem(cust, frame);
 		}
-		/*else if(e.getSource() == btnViewBookedItems)
+		else if(e.getSource() == btnViewBookedItems)
 		{
-			signInGUI new_panel = new signInGUI();
-			new_panel.signIn(frame);
-		}*/
+			viewBookedItemsGUI new_panel = new viewBookedItemsGUI();
+			new_panel.viewBookedItems(cust, frame);
+		}
 		else if(e.getSource() == btnViewMonthlyReport)
 		{
 			monthlyAccountGUI new_panel = new monthlyAccountGUI();

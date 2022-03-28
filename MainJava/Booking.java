@@ -3,6 +3,7 @@ package code;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 /**
  * Contains details of item bookings and the ability to save bookings to the database or check for clashes of dates.
@@ -15,18 +16,20 @@ public class Booking {
 	// Instance variables.
 	private int booking_num;
 	private Item item;
-	private int lenderNum;
+	private int lender_num;
 	private Customer borrower;
 	private LocalDate start_date;
 	private LocalDate end_date;
 	private double total_cost;
+	private int borrower_num;
+	private int item_num;
 
 	// Default constructor.
 	public Booking() {
 		
 		booking_num = 0;
 		item = new Item();
-		lenderNum = 0;
+		lender_num = 0;
 		borrower = new Customer();
 		start_date = LocalDate.now();
 		end_date = LocalDate.now();
@@ -35,11 +38,11 @@ public class Booking {
 	}
 	
 	// Parameterised constructor without booking number.
-	public Booking(Item item, int lenderNum, Customer borrower, LocalDate start_date, LocalDate end_date, double total_cost) {
+	public Booking(Item item, int lender_num, Customer borrower, LocalDate start_date, LocalDate end_date, double total_cost) {
 		
 		booking_num = 0;
 		this.item = item;
-		this.lenderNum = lenderNum;
+		this.lender_num = lender_num;
 		this.borrower = borrower;
 		this.start_date = start_date;
 		this.end_date = end_date;
@@ -48,12 +51,25 @@ public class Booking {
 	}
 	
 	// Parameterised constructor with booking number.
-	public Booking(int booking_num, Item item, int lenderNum, Customer borrower, LocalDate start_date, LocalDate end_date, double total_cost) {
+	public Booking(int booking_num, Item item, int lender_num, Customer borrower, LocalDate start_date, LocalDate end_date, double total_cost) {
 		
 		this.booking_num = booking_num;
 		this.item = item;
-		this.lenderNum = lenderNum;
+		this.lender_num = lender_num;
 		this.borrower = borrower;
+		this.start_date = start_date;
+		this.end_date = end_date;
+		this.total_cost = total_cost;	
+		
+	}
+	
+	// Parameterised constructor with booking number and item number instead of item class.
+	public Booking(int booking_num, int item_num, int lender_num, int borrower_num, LocalDate start_date, LocalDate end_date, double total_cost) {
+		
+		this.booking_num = booking_num;
+		this.item_num = item_num;
+		this.lender_num = lender_num;
+		this.borrower_num = borrower_num;
 		this.start_date = start_date;
 		this.end_date = end_date;
 		this.total_cost = total_cost;	
@@ -64,7 +80,7 @@ public class Booking {
 	public void saveBooking() {
 		
 		String sql = ("INSERT into Bookings VALUES (seq_booking.nextval," + item.getItem_num() + "," + 
-						lenderNum + "," + borrower.getCust_num() + ",'" + start_date.format(DateTimeFormatter.ofPattern("dd-MMM-uuuu")) + 
+						lender_num + "," + borrower.getCust_num() + ",'" + start_date.format(DateTimeFormatter.ofPattern("dd-MMM-uuuu")) + 
 						"','" + end_date.format(DateTimeFormatter.ofPattern("dd-MMM-uuuu")) + "'," + total_cost + ")");
 		
 		System.out.println(sql);
@@ -131,6 +147,56 @@ public class Booking {
 		       System.err.println(ex);
 		   }
 		return true;
+	}
+	
+	// Function to return all bookings in database for a given borrower.
+	public Booking[] viewAllBookings(Customer cust) {
+		
+		String sql = ("SELECT * FROM bookings WHERE borrowerID = " + cust.getCust_num());
+		
+		Connection con = null;
+		
+		ArrayList<Booking> booking_list = new ArrayList<Booking>();
+		
+		try {
+		       DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
+		       System.out.println("Connecting to Database...");
+		       con = DriverManager.getConnection(url);
+		       
+		       Statement stmt = con.createStatement();
+		  		       
+		       ResultSet rs1 = stmt.executeQuery(sql);
+
+		       while (rs1.next()) {
+
+		    	   int new_order_id = rs1.getInt("ORDERID");
+		    	   int new_user_id = rs1.getInt("USERID");
+		    	   int new_item_id = rs1.getInt("ITEMID");
+		    	   int new_borrower_id = rs1.getInt("BORROWERID");
+		    	   Date new_start_date = rs1.getDate("STARTDATE");
+		    	   Date new_end_date = rs1.getDate("ENDDATE");
+		    	   double new_total_cost = rs1.getDouble("TOTALCOST");
+		    	   
+		    	   LocalDate start_date = LocalDate.parse(new_start_date.toString());
+		    	   LocalDate end_date = LocalDate.parse(new_end_date.toString());
+		    	   
+		    	   Booking new_booking = new Booking(new_order_id, new_user_id, new_item_id, new_borrower_id,
+		    			   				start_date, end_date, new_total_cost);
+		    	   
+		    	   booking_list.add(new_booking);   
+
+		       }
+		       
+		   }
+
+		catch (Exception ex) {
+	
+		       System.err.println(ex);
+		   }
+		
+		Booking[] booking_list2 = booking_list.toArray(new Booking[booking_list.size()]);
+		
+		return booking_list2;
 	}
 	
 	// Function to return all debits and credits for a customer for a year.
@@ -234,11 +300,11 @@ public class Booking {
 	}
 
 	public int getLenderNum() {
-		return lenderNum;
+		return lender_num;
 	}
 
-	public void setLenderNum(int lenderNum) {
-		this.lenderNum = lenderNum;
+	public void setLenderNum(int lender_num) {
+		this.lender_num = lender_num;
 	}
 
 	public Customer getBorrower() {
