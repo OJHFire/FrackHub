@@ -25,6 +25,7 @@ public class newUserGUI implements ActionListener{
 	JTextField txtEmail = new JTextField();
 	JTextField txtPhoneNum = new JTextField();
 	JTextField txtPassword = new JTextField();
+	JTextField txtPasswordConf = new JTextField();
 	
 	JLabel lblFirstName = new JLabel("First Name");
 	JLabel lblLastName = new JLabel("Last Name");
@@ -32,6 +33,7 @@ public class newUserGUI implements ActionListener{
 	JLabel lblEmail = new JLabel("Email");
 	JLabel lblPhoneNum = new JLabel("Phone Number");
 	JLabel lblPassword = new JLabel("Password");
+	JLabel lblPasswordConf = new JLabel("Confirm Password");
 	
 	// Function to create GUI page.
 	public void newUser(JFrame new_frame) {
@@ -67,6 +69,9 @@ public class newUserGUI implements ActionListener{
 		newUser.add(txtPhoneNum);
 		newUser.add(lblPassword);
 		newUser.add(txtPassword);
+		newUser.add(lblPasswordConf);
+		newUser.add(txtPasswordConf);
+		
 		
 		newUser2.add(btnConNewUser);
 		newUser2.add(btnReturnMM);
@@ -82,16 +87,23 @@ public class newUserGUI implements ActionListener{
 	public void conNewUser() {
 			
 			if ((!txtFirstName.getText().isEmpty()) && (!txtLastName.getText().isEmpty()) && (!txtAddress.getText().isEmpty()) &&
-					(!txtEmail.getText().isEmpty()) && (!txtPhoneNum.getText().isEmpty()) && (!txtPassword.getText().isEmpty())) {
+					(!txtEmail.getText().isEmpty()) && (!txtPhoneNum.getText().isEmpty()) && (!txtPassword.getText().isEmpty()) && 
+					(!txtPasswordConf.getText().isEmpty())) {
 				if (checkNumeric(txtPhoneNum.getText())) {
 					if (isValid(txtEmail.getText())) {
 						Name userName = new Name(txtFirstName.getText() + " " + txtLastName.getText());
 						Customer cust = new Customer(userName, txtPassword.getText(), 
 						txtAddress.getText(), txtEmail.getText(), txtPhoneNum.getText());
 						if (cust.emailIsUnique() == 0) {
-							cust.saveCust();
-							optionMenuGUI new_panel = new optionMenuGUI();
-							new_panel.optionMenu(cust, frame);
+							if (cust.getPassword() == txtPasswordConf.getText()) {
+								cust.saveCust();
+								optionMenuGUI new_panel = new optionMenuGUI();
+								new_panel.optionMenu(cust, frame);
+							}
+							else {
+								newUser(frame);
+								inputWarning("Passwords don't match.");
+							}
 						}
 						else {
 							newUser(frame);
