@@ -3,10 +3,17 @@ package code;
 import java.sql.*;
 import java.util.*;
 
+/**
+ * Contains details of items and the ability to save the item details to the database, 
+ * and find all items in the database that are not the customers.
+ * 
+ */
+
 public class Item {
 	
 	String url = "jdbc:oracle:thin:OPS$2042387/P46919@ora-srv.wlv.ac.uk:1521/catdb.wlv.ac.uk";
 	
+	// Instance variables.
 	private int item_num;
 	private int cust_num;
 	private String name;
@@ -15,6 +22,7 @@ public class Item {
 	private double value;
 	private double daily_rate;
 	
+	// Default constructor.
 	public Item() {
 		
 		item_num = 0;
@@ -27,6 +35,7 @@ public class Item {
 		
 	}
 	
+	// Parameterised constructor without item number.
 	public Item(int cust_num, String name, String type, String description, double value, double daily_rate) {
 		
 		this.item_num = 0;
@@ -39,6 +48,7 @@ public class Item {
 		
 	}
 	
+	// Parameterised constructor with item number.
 	public Item(int item_num, int cust_num, String name, String type, String description, double value, double daily_rate) {
 		
 		this.item_num = item_num;
@@ -51,6 +61,7 @@ public class Item {
 		
 	}
 	
+	// Function to save item to the database.
 	public void saveItem() {
 		
 		String sql = ("INSERT into Items VALUES (seq_item.nextval," + cust_num + ",'" + name + "','" +
@@ -79,9 +90,10 @@ public class Item {
 		   }
 	}
 	
+	// Function to return an array list of all items that do not belong to the customer.
 	public ItemResult viewAllItems(Customer cust) {
 		
-		String sql1 = ("SELECT distinct type FROM items WHERE userid != " + cust.getCust_num());
+		String sql1 = ("SELECT distinct type FROM items WHERE userid != " + cust.getCust_num() + " ORDER BY type ASC");
 		String sql2 = ("SELECT * FROM items WHERE userid != " + cust.getCust_num());
 		
 		System.out.println(sql1);
@@ -137,6 +149,53 @@ public class Item {
 		ItemResult result = new ItemResult(type_list, item_list);
 		
 		return result;
+	}
+	
+	// Function to return an array list of all items that belong to the customer.
+	public ArrayList<Item> viewAllMyItems(Customer cust) {
+		
+		String sql1 = ("SELECT * FROM items WHERE userid = " + cust.getCust_num());
+		
+		System.out.println(sql1);
+		
+		Connection con = null;
+
+		ArrayList<Item> item_list = new ArrayList<Item>();
+		
+		try {
+		       DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
+		       System.out.println("Connecting to Database...");
+		       con = DriverManager.getConnection(url);
+		       
+		       Statement stmt = con.createStatement();
+		              
+		       ResultSet rs1 = stmt.executeQuery(sql1);
+
+		       while (rs1.next()) {
+
+		    	   int new_item_num = rs1.getInt("id");
+		    	   int new_cust_num = rs1.getInt("userid");
+		    	   String new_name = rs1.getString("name");
+		    	   String new_type = rs1.getString("type");
+		    	   String new_description = rs1.getString("description");
+		    	   double new_value = rs1.getDouble("value");
+		    	   double new_daily_rate = rs1.getDouble("borrow_cost");
+		    	   
+		    	   Item new_item = new Item(new_item_num, new_cust_num, new_name, new_type,
+		    			   				new_description, new_value, new_daily_rate);
+		    	   
+		    	   item_list.add(new_item);   
+
+		       }
+		       
+		   }
+
+		catch (Exception ex) {
+	
+		       System.err.println(ex);
+		   }
+		
+		return item_list;
 	}
 	
 	public class ItemResult {

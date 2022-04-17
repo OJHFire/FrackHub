@@ -4,6 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+/**
+ * Contains GUI to view member information once added to the database.
+ */
+
 public class userInfoGUI implements ActionListener{
 	
 	JFrame frame;
@@ -22,11 +26,13 @@ public class userInfoGUI implements ActionListener{
 	JLabel lblPhoneNum = new JLabel("Phone Number");
 	//JLabel lblPassword = new JLabel("Password");
 	
+	// Function to create GUI page.
 	public void userInfo(Customer new_cust, JFrame new_frame) {
 		
 		frame = new_frame;
 		cust = new_cust;
 		
+		// Layout settings for the page.
 		userInfo = new JPanel();
 		userInfo2 = new JPanel();
 		userInfo.setLayout(new GridLayout(0,2,0,20));
@@ -36,11 +42,13 @@ public class userInfoGUI implements ActionListener{
 		userInfo.setBackground(Color.white);
 		userInfo2.setBackground(Color.white);
 				
+		// Control buttons to sign out or go back to main menu.
 		btnReturnMM = new JButton("Main Menu");
 		btnSignOut = new JButton("Sign Out");
 		btnReturnMM.addActionListener(this);
 		btnSignOut.addActionListener(this);
 		
+		// Labels for details of customer.
 		JLabel lblFirstName2 = new JLabel(cust.getName().getFirstName());
 		JLabel lblLastName2 = new JLabel(cust.getName().getSurname());
 		JLabel lblAddress2 = new JLabel(cust.getAddress());
@@ -63,7 +71,6 @@ public class userInfoGUI implements ActionListener{
 		userInfo2.add(btnSignOut);
 		userInfo2.add(btnReturnMM);
 		
-		
 		frame.getContentPane().removeAll();
 		frame.getContentPane().add(userInfo, BorderLayout.NORTH);
 		frame.getContentPane().add(userInfo2, BorderLayout.SOUTH);
@@ -71,13 +78,16 @@ public class userInfoGUI implements ActionListener{
 		frame.revalidate();		
 	}
 	
+	// Function for any events.
 	public void actionPerformed(ActionEvent e) {
 
+		// When the main menu button is pressed the optionMenuGUI is created.
 		if(e.getSource() == btnReturnMM)
 		{
 			optionMenuGUI new_panel = new optionMenuGUI();
 			new_panel.optionMenu(cust, frame);
 		}
+		// When the sign out button is pressed the mainMenuGUI is created.
 		else if(e.getSource() == btnSignOut)
 		{
 			mainMenuGUI new_panel = new mainMenuGUI();

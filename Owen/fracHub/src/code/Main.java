@@ -1,9 +1,8 @@
 package code;
 
-import java.awt.Color;
-
-import javax.swing.JFrame;
-import javax.swing.JPasswordField;
+/**
+ *  The main class to start the application.
+ */
 
 public class Main {
 

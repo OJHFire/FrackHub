@@ -1,21 +1,22 @@
 package code;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-import code.Item.ItemResult;
+/**
+ * Contains details of item bookings and the ability to save bookings to the database or check for clashes of dates.
+ */
 
 public class Booking {
 	
 	String url = "jdbc:oracle:thin:OPS$2042387/P46919@ora-srv.wlv.ac.uk:1521/catdb.wlv.ac.uk";
 	
+	// Instance variables.
 	private int booking_num;
 	private Item item;
-	private int lenderNum;
+	private int lender_num;
 	private Customer borrower;
 	private LocalDate start_date;
 	private LocalDate end_date;
@@ -23,12 +24,12 @@ public class Booking {
 	private int borrower_num;
 	private int item_num;
 
-	
+	// Default constructor.
 	public Booking() {
 		
 		booking_num = 0;
 		item = new Item();
-		lenderNum = 0;
+		lender_num = 0;
 		borrower = new Customer();
 		start_date = LocalDate.now();
 		end_date = LocalDate.now();
@@ -36,11 +37,12 @@ public class Booking {
 		
 	}
 	
-	public Booking(Item item, int lenderNum, Customer borrower, LocalDate start_date, LocalDate end_date, double total_cost) {
+	// Parameterised constructor without booking number.
+	public Booking(Item item, int lender_num, Customer borrower, LocalDate start_date, LocalDate end_date, double total_cost) {
 		
 		booking_num = 0;
 		this.item = item;
-		this.lenderNum = lenderNum;
+		this.lender_num = lender_num;
 		this.borrower = borrower;
 		this.start_date = start_date;
 		this.end_date = end_date;
@@ -48,11 +50,12 @@ public class Booking {
 		
 	}
 	
-	public Booking(int booking_num, Item item, int lenderNum, Customer borrower, LocalDate start_date, LocalDate end_date, double total_cost) {
+	// Parameterised constructor with booking number.
+	public Booking(int booking_num, Item item, int lender_num, Customer borrower, LocalDate start_date, LocalDate end_date, double total_cost) {
 		
 		this.booking_num = booking_num;
 		this.item = item;
-		this.lenderNum = lenderNum;
+		this.lender_num = lender_num;
 		this.borrower = borrower;
 		this.start_date = start_date;
 		this.end_date = end_date;
@@ -60,11 +63,12 @@ public class Booking {
 		
 	}
 	
-	public Booking(int booking_num, int item_num, int lenderNum, int borrower_num, LocalDate start_date, LocalDate end_date, double total_cost) {
+	// Parameterised constructor with booking number and item number instead of item class.
+	public Booking(int booking_num, int item_num, int lender_num, int borrower_num, LocalDate start_date, LocalDate end_date, double total_cost) {
 		
 		this.booking_num = booking_num;
 		this.item_num = item_num;
-		this.lenderNum = lenderNum;
+		this.lender_num = lender_num;
 		this.borrower_num = borrower_num;
 		this.start_date = start_date;
 		this.end_date = end_date;
@@ -72,10 +76,11 @@ public class Booking {
 		
 	}
 	
+	// Function to save booking onto database.
 	public void saveBooking() {
 		
 		String sql = ("INSERT into Bookings VALUES (seq_booking.nextval," + item.getItem_num() + "," + 
-						lenderNum + "," + borrower.getCust_num() + ",'" + start_date.format(DateTimeFormatter.ofPattern("dd-MMM-uuuu")) + 
+						lender_num + "," + borrower.getCust_num() + ",'" + start_date.format(DateTimeFormatter.ofPattern("dd-MMM-uuuu")) + 
 						"','" + end_date.format(DateTimeFormatter.ofPattern("dd-MMM-uuuu")) + "'," + total_cost + ")");
 		
 		System.out.println(sql);
@@ -101,6 +106,7 @@ public class Booking {
 		   }
 	}
 
+	// Function to check dates for booking are available for item.
 	public boolean checkBooking(int itemNum, String date1, String date2) {
 		
 		String sql = ("SELECT COUNT(*) as count FROM bookings WHERE itemID = " + itemNum +
@@ -143,13 +149,10 @@ public class Booking {
 		return true;
 	}
 	
+	// Function to return all bookings in database for a given borrower.
 	public Booking[] viewAllBookings(Customer cust) {
 		
-		
-		
-		String sql1 = ("SELECT * FROM bookings WHERE borrowerID = " + cust.getCust_num());
-		
-		System.out.println(sql1);
+		String sql = ("SELECT * FROM bookings WHERE borrowerID = " + cust.getCust_num());
 		
 		Connection con = null;
 		
@@ -161,9 +164,8 @@ public class Booking {
 		       con = DriverManager.getConnection(url);
 		       
 		       Statement stmt = con.createStatement();
-		  
-		       
-		       ResultSet rs1 = stmt.executeQuery(sql1);
+		  		       
+		       ResultSet rs1 = stmt.executeQuery(sql);
 
 		       while (rs1.next()) {
 
@@ -175,21 +177,11 @@ public class Booking {
 		    	   Date new_end_date = rs1.getDate("ENDDATE");
 		    	   double new_total_cost = rs1.getDouble("TOTALCOST");
 		    	   
-		    	   System.out.println(new_end_date);
-		    	   
 		    	   LocalDate start_date = LocalDate.parse(new_start_date.toString());
 		    	   LocalDate end_date = LocalDate.parse(new_end_date.toString());
 		    	   
-		    	   //LocalDate start_date = LocalDate.parse(new_start_date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		    	   //LocalDate end_date = LocalDate.parse(new_end_date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		    	   
-		    	   
-		    	   //LocalDate start_date = new_start_date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		    	   //LocalDate end_date = new_end_date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		    	   Booking new_booking = new Booking(new_order_id, new_user_id, new_item_id, new_borrower_id,
 		    			   				start_date, end_date, new_total_cost);
-		    	   
-		    	   System.out.println(end_date.toString());
 		    	   
 		    	   booking_list.add(new_booking);   
 
@@ -207,9 +199,9 @@ public class Booking {
 		return booking_list2;
 	}
 	
+	// Function to return all debits and credits for a customer for a year.
 	public double[][] monthlyAccountBooking(int year, Customer cust) {
 		
-		//ArrayList<double[]> monthlyDetails = new ArrayList<double[]>();
 		double[][] monthlyDetails = new double[12][];
 		
 		String[] month_list = {"January", "February", "March", "April", "May", "June",
@@ -308,11 +300,11 @@ public class Booking {
 	}
 
 	public int getLenderNum() {
-		return lenderNum;
+		return lender_num;
 	}
 
-	public void setLenderNum(int lenderNum) {
-		this.lenderNum = lenderNum;
+	public void setLenderNum(int lender_num) {
+		this.lender_num = lender_num;
 	}
 
 	public Customer getBorrower() {
