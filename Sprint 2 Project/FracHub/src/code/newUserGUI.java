@@ -25,6 +25,7 @@ public class newUserGUI implements ActionListener{
 	JTextField txtEmail = new JTextField();
 	JTextField txtPhoneNum = new JTextField();
 	JTextField txtPassword = new JTextField();
+	JTextField txtPasswordConf = new JTextField();
 	
 	JLabel lblFirstName = new JLabel("First Name");
 	JLabel lblLastName = new JLabel("Last Name");
@@ -32,6 +33,7 @@ public class newUserGUI implements ActionListener{
 	JLabel lblEmail = new JLabel("Email");
 	JLabel lblPhoneNum = new JLabel("Phone Number");
 	JLabel lblPassword = new JLabel("Password");
+	JLabel lblPasswordConf = new JLabel("Confirm Password");
 	
 	NimbusButton nimbusButton = new NimbusButton();
 	Font font = new Font("Calibri", Font.BOLD, 15);
@@ -56,7 +58,7 @@ public class newUserGUI implements ActionListener{
 		// CENTRE PANEL - Create customer detail labels and textfields.
 		newUser1 = new JPanel();
 		newUser1.setLayout(new GridLayout(0,2,0,20));
-		newUser1.setBorder(BorderFactory.createEmptyBorder(30,20,60,20));
+		newUser1.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 		newUser1.setBackground(Color.white);
 		
 		lblFirstName.setFont(font);
@@ -65,6 +67,7 @@ public class newUserGUI implements ActionListener{
 		lblEmail.setFont(font);
 		lblPhoneNum.setFont(font);
 		lblPassword.setFont(font);
+		lblPasswordConf.setFont(font);
 	
 		// Inputs for customer information.
 		newUser1.add(lblFirstName);
@@ -79,6 +82,8 @@ public class newUserGUI implements ActionListener{
 		newUser1.add(txtPhoneNum);
 		newUser1.add(lblPassword);
 		newUser1.add(txtPassword);
+		newUser1.add(lblPasswordConf);
+		newUser1.add(txtPasswordConf);
 		
 		
 		// SOUTH PANEL - Add navigation and confirmation buttons.
@@ -108,54 +113,61 @@ public class newUserGUI implements ActionListener{
 	public void conNewUser() {
 			
 			if ((!txtFirstName.getText().isEmpty()) && (!txtLastName.getText().isEmpty()) && (!txtAddress.getText().isEmpty()) &&
-					(!txtEmail.getText().isEmpty()) && (!txtPhoneNum.getText().isEmpty()) && (!txtPassword.getText().isEmpty())) {
+					(!txtEmail.getText().isEmpty()) && (!txtPhoneNum.getText().isEmpty()) && (!txtPassword.getText().isEmpty()) &&
+					(!txtPasswordConf.getText().isEmpty())) {
 				if (checkNumeric(txtPhoneNum.getText())) {
 					String phoneNum = txtPhoneNum.getText().replace(" ","");
-					if (isValid(txtEmail.getText())) {
-						Name userName = new Name(txtFirstName.getText() + " " + txtLastName.getText());
-						Customer cust = new Customer(userName, txtPassword.getText(), 
-						txtAddress.getText(), txtEmail.getText(), phoneNum);
-						int emailCheck = cust.emailIsUnique();
-						if (emailCheck == 0) {
-							if (cust.saveCust()) {
-								cust = cust.custSignIn(txtEmail.getText(), new JPasswordField(txtPassword.getText()));
-								if (!cust.getAddress().equals("Error")){
-									optionMenuGUI new_panel = new optionMenuGUI();
-									new_panel.optionMenu(cust, frame);
+					if (txtPassword.getText().equals(txtPasswordConf.getText())) {
+						if (isValid(txtEmail.getText())) {
+							Name userName = new Name(txtFirstName.getText() + " " + txtLastName.getText());
+							Customer cust = new Customer(userName, txtPassword.getText(), 
+							txtAddress.getText(), txtEmail.getText(), phoneNum);
+							int emailCheck = cust.emailIsUnique();
+							if (emailCheck == 0) {
+								if (cust.saveCust()) {
+									cust = cust.custSignIn(txtEmail.getText(), new JPasswordField(txtPassword.getText()));
+									if (!cust.getAddress().equals("Error")){
+										optionMenuGUI new_panel = new optionMenuGUI();
+										new_panel.optionMenu(cust, frame);
+									}
+									else {
+										newUser1.setBorder(BorderFactory.createEmptyBorder(0,20,20,20));
+										gui.inputWarning("Connection Issue - Please try again later.");
+									}
 								}
 								else {
-									newUser1.setBorder(BorderFactory.createEmptyBorder(10,20,60,20));
+									newUser1.setBorder(BorderFactory.createEmptyBorder(0,20,20,20));
 									gui.inputWarning("Connection Issue - Please try again later.");
 								}
 							}
 							else {
-								newUser1.setBorder(BorderFactory.createEmptyBorder(10,20,60,20));
-								gui.inputWarning("Connection Issue - Please try again later.");
+								if (emailCheck == 2) {
+									newUser1.setBorder(BorderFactory.createEmptyBorder(0,20,20,20));
+									gui.inputWarning("Connection Issue - Please try again later.");
+								}
+								else {
+									newUser1.setBorder(BorderFactory.createEmptyBorder(0,20,20,20));
+									gui.inputWarning("Email is already in use.");
+								}
 							}
 						}
 						else {
-							if (emailCheck == 2) {
-								newUser1.setBorder(BorderFactory.createEmptyBorder(10,20,60,20));
-								gui.inputWarning("Connection Issue - Please try again later.");
-							}
-							else {
-								newUser1.setBorder(BorderFactory.createEmptyBorder(10,20,60,20));
-								gui.inputWarning("Email is already in use.");
-							}
+							newUser1.setBorder(BorderFactory.createEmptyBorder(0,20,20,20));
+							gui.inputWarning("Please enter a valid email address.");
 						}
 					}
 					else {
-						newUser1.setBorder(BorderFactory.createEmptyBorder(10,20,60,20));
-						gui.inputWarning("Please enter a valid email address.");
+						newUser1.setBorder(BorderFactory.createEmptyBorder(0,20,20,20));
+						gui.inputWarning("The passwords do not match.");
 					}
 				}
 				else {
-					newUser1.setBorder(BorderFactory.createEmptyBorder(10,20,60,20));
+					newUser1.setBorder(BorderFactory.createEmptyBorder(0,20,20,20));
 					gui.inputWarning("Please enter a valid phone number.");
 				}
 			}
 			else {
-				newUser1.setBorder(BorderFactory.createEmptyBorder(10,20,60,20));
+				newUser1.setBorder(BorderFactory.createEmptyBorder(0,20,20,20));
 				gui.inputWarning("Please complete all of the fields.");
 			}
 		}

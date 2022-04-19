@@ -18,6 +18,7 @@ public class signInGUI implements ActionListener{
 	
 	JButton btnConSignIn;
 	JButton btnReturnMM;
+	JButton btnShowPass;
 	
 	JTextField txtEmail = new JTextField();
 	JPasswordField txtPassword = new JPasswordField();
@@ -27,6 +28,8 @@ public class signInGUI implements ActionListener{
 	
 	NimbusButton nimbusButton = new NimbusButton();
 	Font font = new Font("Calibri", Font.BOLD, 15);
+	
+	boolean hidePassword = true;
 	
 	// Function to create GUI page.
 	public signInGUI(JFrame new_frame) {
@@ -45,9 +48,14 @@ public class signInGUI implements ActionListener{
 		
 		// CENTRE PANEL - Create email and password label and input.
 		signIn1 = new JPanel();
-		signIn1.setBorder(BorderFactory.createEmptyBorder(30,20,220,20));
+		signIn1.setBorder(BorderFactory.createEmptyBorder(30,20,180,20));
 		signIn1.setLayout(new GridLayout(0,2,0,20));
 		signIn1.setBackground(Color.white);
+		
+		btnShowPass = nimbusButton.generateNimbusButton("Show Password");
+		btnShowPass.putClientProperty("JComponent.sizeVariant", "large");
+		btnShowPass.setBackground(new Color(255,153,204));
+		btnShowPass.addActionListener(this);
 		
 		lblEmail.setFont(font);
 		lblPassword.setFont(font);
@@ -57,6 +65,9 @@ public class signInGUI implements ActionListener{
 		signIn1.add(txtEmail);
 		signIn1.add(lblPassword);
 		signIn1.add(txtPassword);
+		signIn1.add(btnShowPass);
+		
+		txtPassword.setEchoChar('*');
 		
 		
 		// SOUTH PANEL - Add navigation and confirmation buttons.
@@ -95,22 +106,22 @@ public class signInGUI implements ActionListener{
 						new_panel.optionMenu(cust, frame);
 					}
 					else {
-						signIn1.setBorder(BorderFactory.createEmptyBorder(10,20,220,20));
+						signIn1.setBorder(BorderFactory.createEmptyBorder(10,20,180,20));
 						gui.inputWarning("Connection Issue - Please try again later.");
 					}			
 				}
 				else {
-					signIn1.setBorder(BorderFactory.createEmptyBorder(10,20,220,20));
+					signIn1.setBorder(BorderFactory.createEmptyBorder(10,20,180,20));
 					gui.inputWarning("Email or password is not valid.");
 				}
 			}
 			else {
-				signIn1.setBorder(BorderFactory.createEmptyBorder(10,20,220,20));
+				signIn1.setBorder(BorderFactory.createEmptyBorder(10,20,180,20));
 				gui.inputWarning("Please enter a password.");
 			}
 		}
 		else {
-			signIn1.setBorder(BorderFactory.createEmptyBorder(10,20,220,20));
+			signIn1.setBorder(BorderFactory.createEmptyBorder(10,20,180,20));
 			gui.inputWarning("Please enter an email address.");
 		}
 	}
@@ -130,6 +141,16 @@ public class signInGUI implements ActionListener{
 		{
 			mainMenuGUI new_panel = new mainMenuGUI();
 			new_panel.mainMenu(frame);
+		}
+		else if(e.getSource() == btnShowPass) {
+			if (hidePassword) {
+				hidePassword = false;
+				txtPassword.setEchoChar((char)0);
+			}
+			else {
+				hidePassword = true;
+				txtPassword.setEchoChar('*');
+			}
 		}
 	}
 
