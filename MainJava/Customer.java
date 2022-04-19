@@ -70,9 +70,9 @@ public class Customer {
 	}
 	
 	// Function to save customer details on the database.
-	public void saveCust() {
+	public boolean saveCust() {
 		
-		String sql = ("INSERT into member VALUES (seq_member.nextval,'" + name.getFirstName() + 
+		String sql = ("INSERT into memberv2 VALUES (seq_member.nextval,'" + name.getFirstName() + 
 				"','" + name.getSurname() + "','" + address + "','" + phone_num + "','" + email + "','" + password + "')");
 		
 		System.out.println(sql);
@@ -95,13 +95,75 @@ public class Customer {
 		catch (Exception ex) {
 	
 		       System.err.println(ex);
+		       return false;
 		   }
+		
+		return true;
+	}
+	
+	// Function to edit customer details on the database.
+	public int editCust() {
+		
+		int canCustBeEdited = 0;
+		
+		String sql1 = ("SELECT COUNT(*) AS count FROM memberv2 WHERE email = '" + email + "' and id != " + cust_num);
+		
+		String sql2 = ("SELECT password from memberv2 where id = " + cust_num);
+		
+		Connection con = null;
+		
+		try {
+		       DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
+		       System.out.println("Connecting to Database...");
+		       con = DriverManager.getConnection(url);
+		       
+		       Statement stmt = con.createStatement();
+		       
+		       ResultSet rs1 = stmt.executeQuery(sql1);
+		       
+		       int email_count = 0;
+		       
+		       while (rs1.next()) {
+		    	   
+		    	   email_count = rs1.getInt("count");
+		       }
+		       
+		       if (email_count == 0) {
+		    	   
+		    	   canCustBeEdited = 1;
+		       
+			       ResultSet rs2 = stmt.executeQuery(sql2);
+			       
+			       while (rs2.next()) {
+			    	   
+				       password = rs2.getString("password");
+			       }
+	
+			       String sql3 = ("UPDATE memberv2 SET id = " + cust_num + ", name = '" + name.getFirstName() + 
+							"', surname = '" + name.getSurname() + "', address = '" + address + "', contact_number = '" + 
+							phone_num + "', email = '" + email + "', password = '" + password + "' WHERE id = " + cust_num);
+			       
+			       stmt.executeUpdate(sql3);
+
+		       }
+		       
+		       con.close();
+		       
+		   }
+
+		catch (Exception ex) {
+	
+		       System.err.println(ex);
+		       canCustBeEdited = 3;
+		   }
+		
+		return canCustBeEdited;
 	}
 
 	// Function to find customer details from database with the email and password.
 	public Customer custSignIn(String custEmail, JPasswordField password) {
 		
-		String sql = ("SELECT * FROM member WHERE EMAIL = '" + custEmail + "' AND PASSWORD = '" + new String(password.getPassword()) + "'");
+		String sql = ("SELECT * FROM memberv2 WHERE EMAIL = '" + custEmail + "' AND PASSWORD = '" + new String(password.getPassword()) + "'");
 		
 		System.out.println(sql);
 		
@@ -137,6 +199,7 @@ public class Customer {
 		catch (Exception ex) {
 	
 		       System.err.println(ex);
+		       new_cust.setAddress("Error");
 		   }
 		
 		return new_cust;
@@ -214,13 +277,14 @@ public class Customer {
 	
 	// Function to check if the email of a new user is unique on the database.
 	public int emailIsUnique(){
-		String sql = ("SELECT COUNT(*) AS count FROM member WHERE email = '" + email + "'");
+		String sql = ("SELECT COUNT(*) AS count FROM memberv2 WHERE email = '" + email + "'");
 
 		Connection con = null;
 		int num = 2;
 		try {
 			DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
 			System.out.println("Connecting to Database...");
+			System.out.println(sql);
 			con = DriverManager.getConnection(url);
 
 			Statement stmt = con.createStatement();
@@ -230,7 +294,6 @@ public class Customer {
 			while (rs.next()) {
 				num = rs.getInt("count");
 			}
-			System.out.println(num);
 
 			con.close();
 		}

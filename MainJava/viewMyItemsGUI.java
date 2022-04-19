@@ -2,17 +2,21 @@ package code;
    
 import java.util.*;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.*;
 
 public class viewMyItemsGUI implements ActionListener {
 
 	JFrame frame;
 	Customer cust;
+	GUI gui;
 
 	JPanel topPanel;
 	JPanel centerPanel;
@@ -21,6 +25,7 @@ public class viewMyItemsGUI implements ActionListener {
 	JButton btnNext;
 	JButton btnBack;
 
+	JLabel lblWarning;
 	JLabel lblTitle = new JLabel("My Items");
 	JLabel lblNum = new JLabel("Number: ");
 	JLabel lblName = new JLabel("Name: ");
@@ -32,7 +37,7 @@ public class viewMyItemsGUI implements ActionListener {
 	JLabel lblItemNum = new JLabel();
 	JLabel lblItemName = new JLabel();
 	JLabel lblItemType = new JLabel();
-	JLabel lblItemDescription = new JLabel();
+	JTextArea lblItemDescription;
 	JLabel lblItemValue = new JLabel();
 	JLabel lblItemCostPerDay = new JLabel();
 
@@ -48,99 +53,196 @@ public class viewMyItemsGUI implements ActionListener {
 	double itemValue;
 	double itemCostPerDay;
 	
+	NimbusButton nimbusButton = new NimbusButton();
+	Font font = new Font("Calibri", Font.BOLD, 15);
+	
+	GridBagConstraints panel_constraints;
 	
 	public void viewItem(Customer new_cust, JFrame new_frame) {
 
 		frame = new_frame;
 		cust = new_cust;
 		
-		//frame.setVisible(true);
-		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		//frame.setBounds(50, 50, 450, 500);
-		
 		// Get Total Items
 		if (count == 0) {
 			loadItemList();
 		}
+		
+		// Remove all previous content on frame.
+		frame.getContentPane().removeAll();
 				
-		// TOP PANEL
-		topPanel = new JPanel();
-		lblTitle.setFont(new Font("Serif", Font.BOLD, 30));
-		topPanel.add(lblTitle);
+		// TOP PANEL - Create header with given title.
+		gui = new GUI();
+		gui.pageHeader(frame, "My Items");
+
 
 		// CENTER PANEL
 		centerPanel = new JPanel();
-		GridLayout gl_center = new GridLayout(6,3);
-		gl_center.setVgap(5);
-		gl_center.setHgap(0);
-		centerPanel.setLayout(gl_center);
+		centerPanel.setLayout(new GridBagLayout());
+		panel_constraints = new GridBagConstraints();
+		centerPanel.setBorder(BorderFactory.createEmptyBorder(20,50,110,30));
+		centerPanel.setBackground(Color.white);
 
-		centerPanel.setBorder(BorderFactory.createEmptyBorder(0,20,0,20));
-
-
-		// GET NEXT ITEM
-		if (count < totalItems) {
+		// Check there is a connection with the database.
+		if (!item_list_array[0].getName().equals("")) {
 			
-			itemName = item_list_array[count].getName();
-			itemType = item_list_array[count].getType();
-			itemDescription = item_list_array[count].getDescription();
-			itemValue = item_list_array[count].getValue();
-			itemCostPerDay = item_list_array[count].getDaily_rate();
+			 try {
+				 centerPanel.remove(lblWarning);
+				 frame.repaint();
+				 frame.revalidate();
+			 }
+			 catch (Exception e) {}
 			
-
-			lblItemNum.setText((count + 1)+ " of " + totalItems);
-			centerPanel.add(lblNum);
-			centerPanel.add(lblItemNum);
-
-			lblItemName.setText(itemName);
-			centerPanel.add(lblName);
-			centerPanel.add(lblItemName);
-
-			lblItemType.setText(itemType);
-			centerPanel.add(lblType);
-			centerPanel.add(lblItemType);
-
-			lblItemDescription.setText(itemDescription);
-			centerPanel.add(lblDescription);
-			centerPanel.add(lblItemDescription);
-
-			lblItemValue.setText("£"+String.format("%.2f",itemValue));
-			centerPanel.add(lblValue);
-			centerPanel.add(lblItemValue);
-
-			lblItemCostPerDay.setText("£"+String.format("%.2f",itemCostPerDay));
-			centerPanel.add(lblCostPerDay);
-			centerPanel.add(lblItemCostPerDay);
 			
-			count++;
+			// GET NEXT ITEM
+			if (count < totalItems) {
+				
+				lblItemDescription = new JTextArea(2,30);
+				lblItemDescription.setMaximumSize(new Dimension(10, 10));
+				lblItemDescription.setWrapStyleWord(true);
+				lblItemDescription.setLineWrap(true);
+				lblItemDescription.setOpaque(false);
+				lblItemDescription.setEditable(false);
+				lblItemDescription.setFocusable(false);
+				
+				itemName = item_list_array[count].getName();
+				itemType = item_list_array[count].getType();
+				itemDescription = item_list_array[count].getDescription();
+				itemValue = item_list_array[count].getValue();
+				itemCostPerDay = item_list_array[count].getDaily_rate();
+				
+				lblTitle.setFont(font);
+				lblNum.setFont(font);
+				lblName.setFont(font);
+				lblType.setFont(font);
+				lblDescription.setFont(font);
+				lblValue.setFont(font);
+				lblCostPerDay.setFont(font);
+				
+				lblItemNum.setFont(font);
+				lblItemName.setFont(font);
+				lblItemType.setFont(font);
+				lblItemDescription.setFont(font);
+				lblItemValue.setFont(font);
+				lblItemCostPerDay.setFont(font);
+				
+				
+				lblItemNum.setText((count + 1)+ " of " + totalItems);
+				centerPanel.add(lblNum);
+				centerPanel.add(lblItemNum);
+	
+				lblItemName.setText(itemName);
+				centerPanel.add(lblName);
+				centerPanel.add(lblItemName);
+	
+				lblItemType.setText(itemType);
+				centerPanel.add(lblType);
+				centerPanel.add(lblItemType);
+	
+				lblItemDescription.setText(itemDescription);
+				centerPanel.add(lblDescription);
+				centerPanel.add(lblItemDescription);
+	
+				lblItemValue.setText("£"+String.format("%.2f",itemValue));
+				centerPanel.add(lblValue);
+				centerPanel.add(lblItemValue);
+	
+				lblItemCostPerDay.setText("£"+String.format("%.2f",itemCostPerDay));
+				centerPanel.add(lblCostPerDay);
+				centerPanel.add(lblItemCostPerDay);
+				
+				JLabel space1 = new JLabel("      ");
+				JLabel space2 = new JLabel("      ");
+				panel_constraints.fill = GridBagConstraints.HORIZONTAL;
+				panel_constraints.gridy = 0;
+				panel_constraints.gridx = 0;
+				panel_constraints.weightx = 1.0; 
+				panel_constraints.ipady = 60;
+				panel_constraints.anchor = GridBagConstraints.NORTH;
+				centerPanel.add(space1, panel_constraints);
+				panel_constraints.gridy = 1;
+				panel_constraints.gridx = 0;
+				panel_constraints.ipady = 15;
+				centerPanel.add(lblNum, panel_constraints);
+				panel_constraints.gridx = 1;
+				panel_constraints.ipadx = 60;
+				centerPanel.add(space2, panel_constraints);
+				panel_constraints.gridx = 2;
+				panel_constraints.ipadx = 0;
+				centerPanel.add(lblItemNum, panel_constraints);
+				panel_constraints.gridy = 2;
+				panel_constraints.gridx = 0;
+				centerPanel.add(lblName, panel_constraints);
+				panel_constraints.gridx = 2;
+				centerPanel.add(lblItemName, panel_constraints);
+				panel_constraints.gridy = 3;
+				panel_constraints.gridx = 0;
+				centerPanel.add(lblType, panel_constraints);
+				panel_constraints.gridx = 2;
+				centerPanel.add(lblItemType, panel_constraints);
+				panel_constraints.gridy = 4;
+				panel_constraints.gridx = 0;
+				centerPanel.add(lblDescription, panel_constraints);
+				panel_constraints.gridx = 2;
+				panel_constraints.ipady = 0;
+				centerPanel.add(lblItemDescription, panel_constraints);
+				panel_constraints.gridy = 5;
+				panel_constraints.gridx = 0;
+				panel_constraints.ipady = 15;
+				centerPanel.add(lblValue, panel_constraints);
+				panel_constraints.gridx = 2;
+				centerPanel.add(lblItemValue, panel_constraints);
+				panel_constraints.gridy = 6;
+				panel_constraints.gridx = 0;
+				panel_constraints.anchor = GridBagConstraints.SOUTH;
+				centerPanel.add(lblCostPerDay, panel_constraints);
+				panel_constraints.gridx = 2;
+				centerPanel.add(lblItemCostPerDay, panel_constraints);
+				
+				count++;
 			
-		}else {
-			//Display NO Items Message
-			lblNum.setText("You have not uploaded any items yet.");
-			centerPanel.add(lblNum);
+			}else {
+				//Display NO Items Message
+				lblNum.setText("You have not uploaded any items yet.");
+				lblNum.setHorizontalAlignment(JLabel.CENTER);
+				centerPanel.add(lblNum);
+				
+			}
+		}
+		else {
 			
+			//Display warning message if there is no connection.
+			lblWarning = new JLabel("Connection Issue - Please try again later.");
+			lblWarning.setHorizontalAlignment(JLabel.CENTER);
+			centerPanel.add(lblWarning);
 		}
 		
 		//BOTTOM PANEL
 		bottomPanel = new JPanel();
 		bottomPanel.setLayout(new GridLayout(0, 2, 20,10));
 		bottomPanel.setBorder(BorderFactory.createEmptyBorder(0,50,20,50));
+		bottomPanel.setBackground(Color.white);
 		
-		btnBack = new JButton("Main Menu");
+		btnBack = nimbusButton.generateNimbusButton("Main Menu");
+		btnBack.putClientProperty("JComponent.sizeVariant", "large");
 		btnBack.addActionListener(this);
-		btnNext = new JButton("Next Item");
+		btnNext = nimbusButton.generateNimbusButton("Next Item");
+		btnNext.putClientProperty("JComponent.sizeVariant", "large");
 		btnNext.addActionListener(this);
 		
-		bottomPanel.add(btnBack);
+		
 		if( count < totalItems) {
+			bottomPanel.setLayout(new GridLayout(0, 2, 20,10));
+			bottomPanel.setBorder(BorderFactory.createEmptyBorder(0,50,20,50));
 			bottomPanel.add(btnNext);
-			
+			bottomPanel.add(btnBack);			
+		}
+		else {
+			bottomPanel.setLayout(new GridLayout(0, 1, 20,10));
+			bottomPanel.setBorder(BorderFactory.createEmptyBorder(0,140,20,140));
+			bottomPanel.add(btnBack);
 		}
 
-
-		frame.getContentPane().removeAll();
-		frame.getContentPane().add(topPanel, BorderLayout.NORTH);
 		frame.getContentPane().add(centerPanel, BorderLayout.CENTER);
 		frame.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
 		frame.repaint();

@@ -62,9 +62,9 @@ public class Item {
 	}
 	
 	// Function to save item to the database.
-	public void saveItem() {
+	public boolean saveItem() {
 		
-		String sql = ("INSERT into Items VALUES (seq_item.nextval," + cust_num + ",'" + name + "','" +
+		String sql = ("INSERT into itemsv2 VALUES (seq_item.nextval," + cust_num + ",'" + name + "','" +
 						type + "','" + description + "'," + value + "," + daily_rate + ")");
 		
 		System.out.println(sql);
@@ -87,14 +87,16 @@ public class Item {
 		catch (Exception ex) {
 	
 		       System.err.println(ex);
+		       return false;
 		   }
+		return true;
 	}
 	
 	// Function to return an array list of all items that do not belong to the customer.
 	public ItemResult viewAllItems(Customer cust) {
 		
-		String sql1 = ("SELECT distinct type FROM items WHERE userid != " + cust.getCust_num() + " ORDER BY type ASC");
-		String sql2 = ("SELECT * FROM items WHERE userid != " + cust.getCust_num());
+		String sql1 = ("SELECT distinct type FROM itemsv2 WHERE userid != " + cust.getCust_num() + " ORDER BY type ASC");
+		String sql2 = ("SELECT * FROM itemsv2 WHERE userid != " + cust.getCust_num());
 		
 		System.out.println(sql1);
 		
@@ -144,6 +146,7 @@ public class Item {
 		catch (Exception ex) {
 	
 		       System.err.println(ex);
+		       type_list.add("Error");   
 		   }
 		
 		ItemResult result = new ItemResult(type_list, item_list);
@@ -154,7 +157,7 @@ public class Item {
 	// Function to return an array list of all items that belong to the customer.
 	public ArrayList<Item> viewAllMyItems(Customer cust) {
 		
-		String sql1 = ("SELECT * FROM items WHERE userid = " + cust.getCust_num());
+		String sql1 = ("SELECT * FROM itemsv2 WHERE userid = " + cust.getCust_num());
 		
 		System.out.println(sql1);
 		
@@ -193,6 +196,8 @@ public class Item {
 		catch (Exception ex) {
 	
 		       System.err.println(ex);
+		       Item new_item = new Item();
+		       item_list.add(new_item);  
 		   }
 		
 		return item_list;

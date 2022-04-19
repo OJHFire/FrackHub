@@ -11,9 +11,9 @@ import java.awt.event.*;
 public class newUserGUI implements ActionListener{
 	
 	JFrame frame;
+	GUI gui;
 	
-	JPanel warningPanel;
-	JPanel newUser;
+	JPanel newUser1;
 	JPanel newUser2;
 	
 	JButton btnConNewUser;
@@ -35,49 +35,75 @@ public class newUserGUI implements ActionListener{
 	JLabel lblPassword = new JLabel("Password");
 	JLabel lblPasswordConf = new JLabel("Confirm Password");
 	
+	NimbusButton nimbusButton = new NimbusButton();
+	Font font = new Font("Calibri", Font.BOLD, 15);
+	
+	GridBagConstraints panel_constraints;
+	
 	// Function to create GUI page.
-	public void newUser(JFrame new_frame) {
+	public newUserGUI(JFrame new_frame) {
 		
 		frame = new_frame;
+	
+		// Remove all previous content on frame.
+		frame.getContentPane().removeAll();
 		
 		// Layout settings for the page.
-		newUser = new JPanel();
+		
+		// NORTH PANEL - Create header with given title.
+		gui = new GUI();
+		gui.pageHeader(frame, "Sign Me Up");
+		
+		
+		// CENTRE PANEL - Create customer detail labels and textfields.
+		newUser1 = new JPanel();
+		newUser1.setLayout(new GridLayout(0,2,0,20));
+		newUser1.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
+		newUser1.setBackground(Color.white);
+		
+		lblFirstName.setFont(font);
+		lblLastName.setFont(font);
+		lblAddress.setFont(font);
+		lblEmail.setFont(font);
+		lblPhoneNum.setFont(font);
+		lblPassword.setFont(font);
+		lblPasswordConf.setFont(font);
+	
+		// Inputs for customer information.
+		newUser1.add(lblFirstName);
+		newUser1.add(txtFirstName);
+		newUser1.add(lblLastName);
+		newUser1.add(txtLastName);
+		newUser1.add(lblAddress);
+		newUser1.add(txtAddress);
+		newUser1.add(lblEmail);
+		newUser1.add(txtEmail);
+		newUser1.add(lblPhoneNum);
+		newUser1.add(txtPhoneNum);
+		newUser1.add(lblPassword);
+		newUser1.add(txtPassword);
+		newUser1.add(lblPasswordConf);
+		newUser1.add(txtPasswordConf);
+		
+		
+		// SOUTH PANEL - Add navigation and confirmation buttons.
 		newUser2 = new JPanel();
-		newUser.setBorder(BorderFactory.createEmptyBorder(50,20,0,20));
+		newUser2.setLayout(new GridLayout(0,2,20,10));
 		newUser2.setBorder(BorderFactory.createEmptyBorder(0,50,20,50));
-		newUser.setLayout(new GridLayout(0,2,0,20));	
-		newUser2.setLayout(new GridLayout(0,2,20,10));	
-		newUser.setBackground(Color.white);
 		newUser2.setBackground(Color.white);
 		
 		// Control buttons to confirm add new customer or go back to main menu.
-		btnConNewUser = new JButton("Confirm");
+		btnConNewUser = nimbusButton.generateNimbusButton("Confirm");
+		btnConNewUser.putClientProperty("JComponent.sizeVariant", "large");
 		btnConNewUser.addActionListener(this);
-		btnReturnMM = new JButton("Main Menu");
+		btnReturnMM = nimbusButton.generateNimbusButton("Main Menu");
+		btnReturnMM.putClientProperty("JComponent.sizeVariant", "large");
 		btnReturnMM.addActionListener(this);
-	
-		// Inputs for customer information.
-		newUser.add(lblFirstName);
-		newUser.add(txtFirstName);
-		newUser.add(lblLastName);
-		newUser.add(txtLastName);
-		newUser.add(lblAddress);
-		newUser.add(txtAddress);
-		newUser.add(lblEmail);
-		newUser.add(txtEmail);
-		newUser.add(lblPhoneNum);
-		newUser.add(txtPhoneNum);
-		newUser.add(lblPassword);
-		newUser.add(txtPassword);
-		newUser.add(lblPasswordConf);
-		newUser.add(txtPasswordConf);
-		
-		
+				
 		newUser2.add(btnConNewUser);
 		newUser2.add(btnReturnMM);
 		
-		frame.getContentPane().removeAll();
-		frame.getContentPane().add(newUser, BorderLayout.NORTH);
+		frame.getContentPane().add(newUser1, BorderLayout.CENTER);
 		frame.getContentPane().add(newUser2, BorderLayout.SOUTH);
 		frame.repaint();
 		frame.revalidate();		
@@ -87,57 +113,66 @@ public class newUserGUI implements ActionListener{
 	public void conNewUser() {
 			
 			if ((!txtFirstName.getText().isEmpty()) && (!txtLastName.getText().isEmpty()) && (!txtAddress.getText().isEmpty()) &&
-					(!txtEmail.getText().isEmpty()) && (!txtPhoneNum.getText().isEmpty()) && (!txtPassword.getText().isEmpty()) && 
+					(!txtEmail.getText().isEmpty()) && (!txtPhoneNum.getText().isEmpty()) && (!txtPassword.getText().isEmpty()) &&
 					(!txtPasswordConf.getText().isEmpty())) {
 				if (checkNumeric(txtPhoneNum.getText())) {
-					if (isValid(txtEmail.getText())) {
-						Name userName = new Name(txtFirstName.getText() + " " + txtLastName.getText());
-						Customer cust = new Customer(userName, txtPassword.getText(), 
-						txtAddress.getText(), txtEmail.getText(), txtPhoneNum.getText());
-						if (cust.emailIsUnique() == 0) {
-							if (cust.getPassword() == txtPasswordConf.getText()) {
-								cust.saveCust();
-								optionMenuGUI new_panel = new optionMenuGUI();
-								new_panel.optionMenu(cust, frame);
+					String phoneNum = txtPhoneNum.getText().replace(" ","");
+					if (txtPassword.getText().equals(txtPasswordConf.getText())) {
+						if (isValid(txtEmail.getText())) {
+							Name userName = new Name(txtFirstName.getText() + " " + txtLastName.getText());
+							Customer cust = new Customer(userName, txtPassword.getText(), 
+							txtAddress.getText(), txtEmail.getText(), phoneNum);
+							int emailCheck = cust.emailIsUnique();
+							if (emailCheck == 0) {
+								if (cust.saveCust()) {
+									cust = cust.custSignIn(txtEmail.getText(), new JPasswordField(txtPassword.getText()));
+									if (!cust.getAddress().equals("Error")){
+										optionMenuGUI new_panel = new optionMenuGUI();
+										new_panel.optionMenu(cust, frame);
+									}
+									else {
+										newUser1.setBorder(BorderFactory.createEmptyBorder(0,20,20,20));
+										gui.inputWarning("Connection Issue - Please try again later.");
+									}
+								}
+								else {
+									newUser1.setBorder(BorderFactory.createEmptyBorder(0,20,20,20));
+									gui.inputWarning("Connection Issue - Please try again later.");
+								}
 							}
 							else {
-								newUser(frame);
-								inputWarning("Passwords don't match.");
+								if (emailCheck == 2) {
+									newUser1.setBorder(BorderFactory.createEmptyBorder(0,20,20,20));
+									gui.inputWarning("Connection Issue - Please try again later.");
+								}
+								else {
+									newUser1.setBorder(BorderFactory.createEmptyBorder(0,20,20,20));
+									gui.inputWarning("Email is already in use.");
+								}
 							}
 						}
 						else {
-							newUser(frame);
-							inputWarning("Email is already in use.");
+							newUser1.setBorder(BorderFactory.createEmptyBorder(0,20,20,20));
+							gui.inputWarning("Please enter a valid email address.");
 						}
 					}
 					else {
-						newUser(frame);
-						inputWarning("Please enter a valid email address.");
+						newUser1.setBorder(BorderFactory.createEmptyBorder(0,20,20,20));
+						gui.inputWarning("The passwords do not match.");
 					}
 				}
 				else {
-					newUser(frame);
-					inputWarning("Please enter a valid phone number.");
+					newUser1.setBorder(BorderFactory.createEmptyBorder(0,20,20,20));
+					gui.inputWarning("Please enter a valid phone number.");
 				}
 			}
 			else {
-				newUser(frame);
-				inputWarning("Please complete all of the fields.");
+				newUser1.setBorder(BorderFactory.createEmptyBorder(0,20,20,20));
+				gui.inputWarning("Please complete all of the fields.");
 			}
 		}
 	
-	// Function to display warning message.
-	public void inputWarning(String message) {
-		
-		warningPanel = new JPanel();
-		JLabel lblWarning = new JLabel(message);
-		warningPanel.setBackground(Color.white);
-		warningPanel.add(lblWarning);
-		frame.getContentPane().add(warningPanel, BorderLayout.CENTER);
-		frame.repaint();
-		frame.revalidate();
-	}
-	
+
 	// Adapted from code on https://www.tutorialspoint.com/validate-email-address-in-java
 	// Function to check the String is in the correct form for an email.
 	public boolean isValid(String email) {
@@ -149,7 +184,8 @@ public class newUserGUI implements ActionListener{
 	public boolean checkNumeric(String s) {
 		try 
 		{
-			Integer.parseInt(s);
+			s = s.replace(" ","");
+			Long.parseLong(s);
 			return true;
 			
 		}
