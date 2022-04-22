@@ -110,10 +110,11 @@ public class editUserGUI implements ActionListener{
 			if ((!txtFirstName.getText().isEmpty()) && (!txtLastName.getText().isEmpty()) && (!txtAddress.getText().isEmpty()) &&
 					(!txtEmail.getText().isEmpty()) && (!txtPhoneNum.getText().isEmpty())) {
 				if (checkNumeric(txtPhoneNum.getText())) {
+					String phoneNum = txtPhoneNum.getText().replace(" ","");
 					if (isValid(txtEmail.getText())) {
 						Name userName = new Name(txtFirstName.getText() + " " + txtLastName.getText());
 						Customer edit_cust = new Customer(cust.getCust_num(), userName, 
-						txtAddress.getText(), txtEmail.getText(), txtPhoneNum.getText());
+						txtAddress.getText(), txtEmail.getText(), phoneNum);
 						int canCustBeEdited = edit_cust.editCust();
 						if (canCustBeEdited == 1) {
 							optionMenuGUI new_panel = new optionMenuGUI();
@@ -131,19 +132,16 @@ public class editUserGUI implements ActionListener{
 						}
 					}
 					else {
-						//new editUserGUI(cust, frame);
 						newUser1.setBorder(BorderFactory.createEmptyBorder(10,20,105,20));
 						gui.inputWarning("Please enter a valid email address.");
 					}
 				}
 				else {
-					//new editUserGUI(cust, frame);
 					newUser1.setBorder(BorderFactory.createEmptyBorder(10,20,105,20));
 					gui.inputWarning("Please enter a valid phone number.");
 				}
 			}
 			else {
-				//new editUserGUI(cust, frame);
 				newUser1.setBorder(BorderFactory.createEmptyBorder(10,20,105,20));
 				gui.inputWarning("Please complete all of the fields.");
 			}
@@ -160,7 +158,8 @@ public class editUserGUI implements ActionListener{
 	public boolean checkNumeric(String s) {
 		try 
 		{
-			Integer.parseInt(s);
+			s = s.replace(" ","");
+			Long.parseLong(s);
 			return true;
 			
 		}
