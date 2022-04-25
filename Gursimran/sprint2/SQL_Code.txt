@@ -1,0 +1,135 @@
+User Registration
+===================================================================
+CREATE TABLE OPS$2042387.Member(
+  Id INT not NULL,
+  Name varchar(25) NOT NULL,
+  Surname varchar(25) NOT NULL,
+  Address varchar(100) NOT NULL,
+  Contact_Number varchar(11) NOT NULL,
+  Email varchar(50) NOT NULL,
+  Password varchar(25) NOT NULL,
+  PRIMARY KEY(Id)
+);
+=======================================================================
+
+#############################################################################
+User Registration V2
+===================================================================
+CREATE TABLE OPS$2042387.MemberV2(
+  Id INT not NULL,
+  Name varchar(25) NOT NULL,
+  Surname varchar(25) NOT NULL,
+  Address varchar(100) NOT NULL,
+  Contact_Number varchar(11) NOT NULL,
+  Email varchar(50) NOT NULL,
+  Password varchar(80) NOT NULL,
+  PRIMARY KEY(Id)
+);
+=======================================================================
+############################################################################
+
+Item Registration
+=========================================================================
+CREATE TABLE OPS$2042387.Items(
+	Id INT not NULL,
+	UserID int NOT NULL,
+	Name varchar(25) NOT NULL,
+	Type varchar(30) NOT NULL,
+	Description varchar(100) NOT NULL,
+	Value DECIMAL(10,2) NOT NULL,
+	Borrow_Cost DECIMAL(10,2) NOT NULL
+);
+===========================================================================
+
+#############################################################################
+
+Item Registration
+=========================================================================
+CREATE TABLE OPS$2042387.ItemsV2(
+	Id INT not NULL,
+	UserID int NOT NULL,
+	Name varchar(25) NOT NULL,
+	Type varchar(30) NOT NULL,
+	Description varchar(100) NOT NULL,
+	Value DECIMAL(10,2) NOT NULL,
+	Borrow_Cost DECIMAL(10,2) NOT NULLe
+);
+=======================================================================
+############################################################################
+
+Bookings
+==================================================================================
+CREATE TABLE OPS$2042387.Bookings(
+	OrderId INT not NULL,
+	ItemId INT NOT NULL,
+	UserID int NOT NULL,
+	BorrowerID int NOT NULL,
+	StartDate DATE NOT NULL,
+	EndDate DATE NOT NULL,
+	TotalCost DECIMAL(10,2) NOT NULL
+	);
+	
+	Alter Table:
+	CONSTRAINT fk_ItemId
+	FOREIGN KEY (ItemId) REFERENCES Items(Id),
+	CONSTRAINT fk_UserID
+	FOREIGN KEY (UserID) REFERENCES Member(Id),
+	CONSTRAINT fk_BorrowerID
+	FOREIGN KEY (BorrowerID) REFERENCES Member(Id),
+	
+);
+
+============================================================================
+#############################################################################
+
+Item Registration
+=========================================================================
+CREATE TABLE OPS$2042387.BookingsV2(
+	OrderId INT not NULL,
+	ItemId INT NOT NULL,
+	UserID int NOT NULL,
+	BorrowerID int NOT NULL,
+	StartDate DATE NOT NULL,
+	EndDate DATE NOT NULL,
+	TotalCost DECIMAL(10,2) NOT NULL,
+	ItemName varchar(25) NOT NULL
+	);
+	
+	Alter Table BookingV2:
+	ALTER TABLE BookingV2
+	ADD CONSTRAINT fk_ItemIdV2
+	FOREIGN KEY (ItemId) REFERENCES ItemsV2(Id),
+	ADD CONSTRAINT fk_UserIDV2
+	FOREIGN KEY (UserID) REFERENCES MemberV2(Id),
+	ADD CONSTRAINT fk_BorrowerIDV2
+	FOREIGN KEY (BorrowerID) REFERENCES MemberV2(Id);
+	
+);
+=======================================================================
+############################################################################
+
+
+==============================================================================
+SEQUENCE:
+============================================================================
+CREATE SEQUENCE seq_member
+	MINVALUE 1
+	START WITH 1
+	INCREMENT BY 1
+	CACHE 10;
+	
+-------------------------------------------------------------------------------
+	
+CREATE SEQUENCE seq_item
+	MINVALUE 1
+	START WITH 1
+	INCREMENT BY 1
+	CACHE 10;
+	
+CREATE SEQUENCE seq_booking
+	MINVALUE 1
+	START WITH 1
+	INCREMENT BY 1
+	CACHE 10;
+----------------------------------------------------------------------------
+============================================================================
