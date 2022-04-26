@@ -24,6 +24,7 @@ public class viewMyItemsGUI implements ActionListener {
 
 	JButton btnNext;
 	JButton btnBack;
+	JButton btnEdit;
 
 	JLabel lblWarning;
 	JLabel lblTitle = new JLabel("My Items");
@@ -57,6 +58,7 @@ public class viewMyItemsGUI implements ActionListener {
 	Font font = new Font("Calibri", Font.BOLD, 15);
 	
 	GridBagConstraints panel_constraints;
+	boolean no_conn = false;
 	
 	public void viewItem(Customer new_cust, JFrame new_frame) {
 
@@ -206,7 +208,6 @@ public class viewMyItemsGUI implements ActionListener {
 				lblNum.setText("You have not uploaded any items yet.");
 				lblNum.setHorizontalAlignment(JLabel.CENTER);
 				centerPanel.add(lblNum);
-				
 			}
 		}
 		else {
@@ -215,6 +216,7 @@ public class viewMyItemsGUI implements ActionListener {
 			lblWarning = new JLabel("Connection Issue - Please try again later.");
 			lblWarning.setHorizontalAlignment(JLabel.CENTER);
 			centerPanel.add(lblWarning);
+			no_conn = true;
 		}
 		
 		//BOTTOM PANEL
@@ -229,17 +231,26 @@ public class viewMyItemsGUI implements ActionListener {
 		btnNext = nimbusButton.generateNimbusButton("Next Item");
 		btnNext.putClientProperty("JComponent.sizeVariant", "large");
 		btnNext.addActionListener(this);
+		btnEdit = nimbusButton.generateNimbusButton("Edit Item");
+		btnEdit.putClientProperty("JComponent.sizeVariant", "large");
+		btnEdit.addActionListener(this);
 		
-		
-		if( count < totalItems) {
-			bottomPanel.setLayout(new GridLayout(0, 2, 20,10));
+		if(no_conn) {
+			bottomPanel.setLayout(new GridLayout(0, 1, 20,10));
+			bottomPanel.setBorder(BorderFactory.createEmptyBorder(0,140,20,140));
+			bottomPanel.add(btnBack);
+		}
+		else if(count < totalItems) {
+			bottomPanel.setLayout(new GridLayout(0, 3, 0,10));
 			bottomPanel.setBorder(BorderFactory.createEmptyBorder(0,50,20,50));
 			bottomPanel.add(btnNext);
+			bottomPanel.add(btnEdit);
 			bottomPanel.add(btnBack);			
 		}
 		else {
-			bottomPanel.setLayout(new GridLayout(0, 1, 20,10));
-			bottomPanel.setBorder(BorderFactory.createEmptyBorder(0,140,20,140));
+			bottomPanel.setLayout(new GridLayout(0, 2, 20,10));
+			bottomPanel.setBorder(BorderFactory.createEmptyBorder(0,50,20,50));
+			bottomPanel.add(btnEdit);
 			bottomPanel.add(btnBack);
 		}
 
@@ -266,7 +277,10 @@ public class viewMyItemsGUI implements ActionListener {
 			optionMenuGUI new_panel = new optionMenuGUI();
 			new_panel.optionMenu(cust, frame);
 		}
-
+		else if(e.getSource() == btnEdit)
+		{
+			new editMyItemGUI(item_list_array[count - 1], cust, frame);
+		}
 	}
 
 }

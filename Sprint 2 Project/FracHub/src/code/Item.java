@@ -92,6 +92,56 @@ public class Item {
 		return true;
 	}
 	
+	// Function to save item to the database.
+	public int editItem() {
+		
+		int canItemBeEdited = 0;
+		
+		String sql1 = ("SELECT COUNT(*) as count from BookingsV2 where ItemID =" + this.getItem_num());
+		
+		String sql2 = ("INSERT into itemsv2 VALUES (seq_item.nextval," + cust_num + ",'" + name + "','" +
+						type + "','" + description + "'," + value + "," + daily_rate + ")");
+		
+		String sql3 = ("DELETE from itemsv2 where ID =" + this.getItem_num());
+		
+		Connection con = null;
+		
+		try {
+		       DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
+		       System.out.println("Connecting to Database...");
+		       con = DriverManager.getConnection(url);
+		       
+		       Statement stmt = con.createStatement();
+		       
+		       ResultSet rs1 = stmt.executeQuery(sql1);
+		       
+		       int booking_count = 0;
+		       
+		       while (rs1.next()) {
+		    	   
+		    	   booking_count = rs1.getInt("count");
+		       }
+		       
+		       if (booking_count == 0) {
+		    	   
+		    	   canItemBeEdited = 1;
+		    	   
+		    	   stmt.executeUpdate(sql3);
+			       
+			       stmt.executeUpdate(sql2);
+
+		       }
+		       con.close();
+		   }
+
+		catch (Exception ex) {
+	
+		       System.err.println(ex);
+		       canItemBeEdited = 3;
+		   }
+		return canItemBeEdited;
+	}
+	
 	// Function to return an array list of all items that do not belong to the customer.
 	public ItemResult viewAllItems(Customer cust) {
 		

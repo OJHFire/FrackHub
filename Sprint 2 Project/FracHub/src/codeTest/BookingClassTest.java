@@ -33,8 +33,8 @@ class BookingClassTest {
 		LocalDate startDate = LocalDate.of(2022,11,23);
 		LocalDate endDate = LocalDate.of(2022,11,24);
 		
-		Item item = new Item(999999, 1, "Grass Trimmer", "Garden", "Bosch EasyGrassCut 26 Corded - 280W", 28, 2.15);
-		Booking booking = new Booking(111111, item.getItem_num(), 1, cust.getCust_num(), startDate, endDate, 4.30, "Grass Trimmer");
+		Item item = new Item(999999, 54, "Grass Trimmer", "Garden", "Bosch EasyGrassCut 26 Corded - 280W", 28, 2.15);
+		Booking booking = new Booking(item.getItem_num(), 54, cust.getCust_num(), startDate, endDate, 4.30, "Grass Trimmer");
 		
 		 // Add item 999999 to items table.
 		try {
@@ -44,7 +44,7 @@ class BookingClassTest {
 		      
 		       Statement stmt = con.createStatement();
 		       
-		       stmt.executeUpdate("INSERT into Itemsv2 VALUES (999999, 1, 'Grass Trimmer', 'Garden', 'Bosch EasyGrassCut 26 Corded - 280W', 28, 2.15)");
+		       stmt.executeUpdate("INSERT into Itemsv2 VALUES (999999, 54, 'Grass Trimmer', 'Garden', 'Bosch EasyGrassCut 26 Corded - 280W', 28, 2.15)");
 		       
 		       con.close();
 		       
@@ -67,7 +67,7 @@ class BookingClassTest {
 		       // Query to find count of all bookings for the customer for item 999999.
 		       Statement stmt1 = con.createStatement();
 		       
-		       ResultSet rs = stmt1.executeQuery("SELECT COUNT(*) AS count FROM bookingsv2 WHERE borrowerid = 4 AND itemid = 999999");  
+		       ResultSet rs = stmt1.executeQuery("SELECT COUNT(*) AS count FROM bookingsv2 WHERE borrowerid = 82 AND itemid = 999999");  
 
 		       while (rs.next()) {
 		    	   booking_count = rs.getInt("count");
@@ -106,7 +106,7 @@ class BookingClassTest {
 		       // Update to add item 999999 to items table.
 		       Statement stmt = con.createStatement();
 		       
-		       stmt.executeUpdate("INSERT into Itemsv2 VALUES (999999, 1, 'Grass Trimmer', 'Garden', 'Bosch EasyGrassCut 26 Corded - 280W', 28, 2.15)");
+		       stmt.executeUpdate("INSERT into Itemsv2 VALUES (999999, 54, 'Grass Trimmer', 'Garden', 'Bosch EasyGrassCut 26 Corded - 280W', 28, 2.15)");
 		       
 		       con.close();
 		       
@@ -123,7 +123,7 @@ class BookingClassTest {
 		int functionCheck = booking2.checkBooking(999999, "20-dec-2022", "25-dec-2022");
 		
 		// Check for true if there are no bookings.
-		assertEquals(true, 1);
+		assertEquals(functionCheck, 1);
 		
 		// Add booking for date 23-dec-2022.
 		try {
@@ -132,7 +132,7 @@ class BookingClassTest {
 		       
 		       Statement stmt = con.createStatement();
 		       
-		       stmt.executeUpdate("INSERT into Bookingsv2 VALUES (seq_booking.nextval,999999,1,4,'23-dec-2022','23-dec-2022',2.15)");	
+		       stmt.executeUpdate("INSERT into Bookingsv2 VALUES (seq_booking.nextval,999999,54,82,'23-dec-2022','23-dec-2022',2.15,'Grass Trimmer')");	
 		       
 		       con.close();
 		       
@@ -145,7 +145,7 @@ class BookingClassTest {
 		
 		//Test checkBooking is false when the booking dates overlap.
 		functionCheck = booking2.checkBooking(999999, "20-dec-2022", "25-dec-2022");
-		assertEquals(false, functionCheck);
+		assertEquals(functionCheck, 0);
 		
 		// Remove booking and item from tables.
 		try {

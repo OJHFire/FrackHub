@@ -122,7 +122,7 @@ public class viewMyItemBookingsGUI implements ActionListener{
 		
 		// Retrieve all the bookings for the customer.
 		booking = new Booking();
-		year_booking_list = booking.viewAllBookings(year, cust);
+		year_booking_list = booking.viewAllMyItemBookings(year, cust);
 		
 		// The list will have a length of 12 unless there has been no connection with the database.
 		if (year_booking_list.length == 12) {
@@ -265,7 +265,7 @@ public class viewMyItemBookingsGUI implements ActionListener{
 
 			month = selectedMonth;
 			if (noConnection) {
-				year_booking_list = booking.viewAllBookings(year, cust);
+				year_booking_list = booking.viewAllMyItemBookings(year, cust);
 			}
 			
 			// Check for connection with the database.
@@ -351,7 +351,7 @@ public class viewMyItemBookingsGUI implements ActionListener{
 
 			year = Integer.parseInt(selectedYear);
 			
-			year_booking_list = booking.viewAllBookings(year, cust);
+			year_booking_list = booking.viewAllMyItemBookings(year, cust);
 			
 			// Check for connection with the database.
 			if (year_booking_list.length == 12) {
