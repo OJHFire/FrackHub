@@ -125,7 +125,7 @@ public class newUserGUI implements ActionListener{
 							int emailCheck = cust.emailIsUnique();
 							if (emailCheck == 0) {
 								if (cust.saveCust()) {
-									cust = cust.custSignIn(txtEmail.getText(), new JPasswordField(txtPassword.getText()));
+									//cust = cust.custSignIn(txtEmail.getText(), new JPasswordField(txtPassword.getText()));
 									if (!cust.getAddress().equals("Error")){
 										optionMenuGUI new_panel = new optionMenuGUI();
 										new_panel.optionMenu(cust, frame);

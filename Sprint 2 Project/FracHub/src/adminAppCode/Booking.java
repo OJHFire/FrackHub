@@ -63,7 +63,7 @@ public class Booking {
 		
 	}
 
-	// Function to return all bookings on the database for customer items in a given year
+	// Function to return all bookings on the database for a given date.
 	public String[][] viewAllBookingDeliveries(LocalDate date, Administrator admin) {
 		
 		ArrayList<String[]> booking_list_delivery = new ArrayList<String[]>();

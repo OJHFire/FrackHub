@@ -1,5 +1,9 @@
 package code;
 
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 
 import javax.swing.JPasswordField;
@@ -73,7 +77,8 @@ public class Customer {
 	public boolean saveCust() {
 		
 		String sql = ("INSERT into memberv2 VALUES (seq_member.nextval,'" + name.getFirstName() + 
-				"','" + name.getSurname() + "','" + address + "','" + phone_num + "','" + email + "','" + password + "')");
+				"','" + name.getSurname() + "','" + address + "','" + phone_num + "','" + email + 
+				"', STANDARD_HASH('" + password + "','SHA1'))");
 		
 		System.out.println(sql);
 		
@@ -163,7 +168,15 @@ public class Customer {
 	// Function to find customer details from database with the email and password.
 	public Customer custSignIn(String custEmail, JPasswordField password) {
 		
-		String sql = ("SELECT * FROM memberv2 WHERE EMAIL = '" + custEmail + "' AND PASSWORD = '" + new String(password.getPassword()) + "'");
+		String encryptPassword = "";
+		try {
+			encryptPassword = encryptPassword(new String(password.getPassword()));
+		}
+		catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		String sql = ("SELECT * FROM memberv2 WHERE EMAIL = '" + custEmail + "' AND PASSWORD = '" + encryptPassword + "'");
 		
 		System.out.println(sql);
 		
@@ -302,6 +315,16 @@ public class Customer {
 			System.err.println(ex);
 		}
 		return num;
+	}
+	
+	//https://stackoverflow.com/questions/4895523/java-string-to-sha1
+	private static String encryptPassword(String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+
+	    MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+	    crypt.reset();
+	    crypt.update(password.getBytes("UTF-8"));
+
+	    return new BigInteger(1, crypt.digest()).toString(16).toUpperCase();
 	}
 	
 	public Name getName() {

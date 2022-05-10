@@ -124,8 +124,7 @@ public class signInGUI implements ActionListener{
 			signIn1.setBorder(BorderFactory.createEmptyBorder(10,20,180,20));
 			gui.inputWarning("Please enter an email address.");
 		}
-	}
-	
+	}	
 	
 	// Function for any events.
 	public void actionPerformed(ActionEvent e) {
